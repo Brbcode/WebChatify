@@ -9,6 +9,10 @@ RUN apt-get update && apt-get install -yq gnupg && \
     apt-get update && apt-get install -yq libicu-dev libzip-dev git nodejs yarn wget && \
     docker-php-ext-install intl zip pdo pdo_mysql
 
+# Symfony
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
+    && apt install symfony-cli
+
 # Clean
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
