@@ -13,8 +13,14 @@ import './bootstrap';
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <h1>Hello World!!</h1>,
+  <React.StrictMode>
+    <React.Suspense fallback={<p>loading</p>}>
+      <RouterProvider router={router} />
+    </React.Suspense>
+  </React.StrictMode>,
 );
