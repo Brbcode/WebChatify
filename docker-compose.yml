@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: .docker/app/Dockerfile
+    depends_on:
+      - sqlserver
+    volumes:
+      - ./:/var/www/html
+
+  sqlserver:
+    container_name: sqlserver
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: ${SQL_USER}
+      MYSQL_PASSWORD: ${SQL_PWD}
+      MYSQL_DATABASE: ${SQL_DB}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db:/var/lib/mysql
+      - .docker/sqlserver/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  db:
+###< doctrine/doctrine-bundle ###
