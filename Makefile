@@ -48,7 +48,9 @@ behat:
 	$(eval args := $(filter-out $@,$(MAKECMDGOALS)))
 	$(DOCKER_CMD) exec app "vendor/bin/behat $(args)"
 
-behat-full:	db-test behat
+behat-full:	db-test
+	$(eval args := $(filter-out $@,$(MAKECMDGOALS)))
+	$(DOCKER_CMD) exec app "vendor/bin/behat $(args)"
 
 version:
 	@echo -n "\033[32mPHP\033[0m version \033[33m"
