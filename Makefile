@@ -28,6 +28,11 @@ init:
 	@echo "###> Composer Install ###"
 	$(DOCKER_CMD) exec app "composer install"
 	@echo "###< Composer Install ###"
+	@echo
+	@echo "###> Hooks Install ###"
+	$(DOCKER_CMD) exec app "cp .docker/hooks/pre-commit .git/hooks/pre-commit"
+	@echo "###< Hooks Install ###"
+
 
 version:
 	@echo -n "\033[32mPHP\033[0m version \033[33m"
