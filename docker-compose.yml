@@ -11,6 +11,17 @@ services:
     volumes:
       - ./:/var/www/html
 
+  nginx:
+    image: nginx:latest
+    container_name: webserver
+    depends_on:
+      - app
+    ports:
+      - "8000:80"
+    volumes:
+      - .docker/webserver/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./public:/var/www/html/public
+
   sqlserver:
     container_name: sqlserver
     image: mysql:latest
