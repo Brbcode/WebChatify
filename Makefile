@@ -14,6 +14,9 @@ rebuild:
 bash:
 	$(DOCKER_CMD) exec app bash
 
+watch:
+	$(DOCKER_CMD) exec app "yarn run watch"
+
 db:
 	$(DOCKER_CMD) exec app "php bin/console doctrine:database:drop --if-exists --force"
 	$(DOCKER_CMD) exec app "php bin/console doctrine:database:create"
@@ -30,6 +33,12 @@ init:
 	@echo "###> Composer Install ###"
 	$(DOCKER_CMD) exec app "composer install"
 	@echo "###< Composer Install ###"
+	@echo
+	@echo "###> Yarn Install ###"
+	$(DOCKER_CMD) exec app "yarn install"
+	@echo 'Building... (can take few minutes)'
+	$(DOCKER_CMD) exec app "yarn run build"
+	@echo "###< Yarn Install ###"
 	@echo
 	@echo "###> Hooks Install ###"
 	$(DOCKER_CMD) exec app "cp .docker/hooks/pre-commit .git/hooks/pre-commit"

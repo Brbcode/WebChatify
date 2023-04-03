@@ -19,6 +19,12 @@ RUN apt-get clean && \
 
 RUN usermod -u 1000 www-data
 
+# Change ownership of /var/www directory
+RUN mkdir /var/www/.cache
+RUN touch /var/www/.cache/yarn
+
+RUN chown -R www-data:www-data /var/www
+
 USER 1000
 
 WORKDIR /var/www/html
