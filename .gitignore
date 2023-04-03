@@ -1,4 +1,4 @@
-#Ignore IDE
+###> Ignore IDEs ###
 ## PHPStorm
 /.idea
 
@@ -19,3 +19,4 @@
 ## Eclipse
 /.project
 /.settings
+###< Ignore IDEs ###
