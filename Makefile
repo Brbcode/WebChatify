@@ -18,11 +18,13 @@ db:
 	$(DOCKER_CMD) exec app "php bin/console doctrine:database:drop --if-exists --force"
 	$(DOCKER_CMD) exec app "php bin/console doctrine:database:create"
 	$(DOCKER_CMD) exec app "php bin/console doctrine:migrations:migrate -n"
+	$(DOCKER_CMD) exec app "php bin/console hau:fix:load -n"
 
 db-test:
 	$(DOCKER_CMD) exec app "php bin/console doctrine:database:drop --if-exists --force --env=test"
 	$(DOCKER_CMD) exec app "php bin/console doctrine:database:create --env=test"
 	$(DOCKER_CMD) exec app "php bin/console doctrine:migrations:migrate -n --env=test"
+	$(DOCKER_CMD) exec app "php bin/console hau:fix:load -n --env=test"
 
 init:
 	@echo "###> Composer Install ###"
