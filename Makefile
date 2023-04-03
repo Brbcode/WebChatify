@@ -29,6 +29,13 @@ init:
 	$(DOCKER_CMD) exec app "composer install"
 	@echo "###< Composer Install ###"
 	@echo
+	@echo "###> Yarn Install ###"
+	@echo 'yarn install...'
+	$($(DOCKER_CMD) exec app "yarn install")
+	@echo 'yarn build...'
+	$($(DOCKER_CMD) exec app "yarn run build")
+	@echo "###< Yarn Install ###"
+	@echo
 	@echo "###> Hooks Install ###"
 	$(DOCKER_CMD) exec app "cp .docker/hooks/pre-commit .git/hooks/pre-commit"
 	@echo "###< Hooks Install ###"
