@@ -22,3 +22,10 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Event Listener Services
+    # DomainException Listener
+    App\EventListener\IExceptionListener:
+      class: App\EventListener\ProdExceptionListener
+      tags:
+        - { name: kernel.event_listener, event: kernel.exception }
