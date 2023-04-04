@@ -8,3 +8,6 @@ if [ $? -ne 0 ]; then
     echo "PHP Code Sniffer errors found. Aborting commit."
     exit 1
 fi
+
+#Run ESLINT
+docker exec app "yarn run lint"
