@@ -1,0 +1,6 @@
+App\Entity\User:
+  basic_user:
+    __construct:
+      email: 'example@domain.com'
+      displayName: 'Basic User'
+      password: 'plainPassword'

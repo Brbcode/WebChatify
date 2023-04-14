@@ -29,3 +29,9 @@ services:
       class: App\EventListener\ProdExceptionListener
       tags:
         - { name: kernel.event_listener, event: kernel.exception }
+
+
+    # Fixtures processors
+    App\Fixtures\Processors\UserProcessor:
+      class: App\Fixtures\Processors\UserProcessor
+      tags: [ { name: fidry_alice_data_fixtures.processor } ]
