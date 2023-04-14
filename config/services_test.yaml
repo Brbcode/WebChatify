@@ -6,6 +6,7 @@ services:
     App\Tests\Behat\:
         resource: '../tests/Behat/*'
 
+    Behatch\HttpCall\Request: ~
 
     # Event Listener Services
     # DomainException Listener
