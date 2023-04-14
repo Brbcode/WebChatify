@@ -43,6 +43,10 @@ init:
 	@echo "###> Hooks Install ###"
 	$(DOCKER_CMD) exec app "cp .docker/hooks/pre-commit .git/hooks/pre-commit"
 	@echo "###< Hooks Install ###"
+	@echo
+	@echo "###> Generate the SSL keys ###"
+	$(DOCKER_CMD) exec app "php bin/console lexik:jwt:generate-keypair --overwrite"
+	@echo "###< Generate the SSL keys ###"
 
 behat:
 	$(eval args := $(filter-out $@,$(MAKECMDGOALS)))
