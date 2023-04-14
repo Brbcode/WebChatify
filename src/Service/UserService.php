@@ -21,4 +21,21 @@ class UserService
         $this->userRepository = $userRepository;
         $this->encoder = $encoder;
     }
+
+    public function signUp(string $email, string $displayName, string $plainPassword) : User
+    {
+        if ($this->userRepository->findBy(['email' => $email])) {
+            throw EmailAlreadyRegistered::build();
+        }
+
+        $user = new User($email, $displayName, $plainPassword);
+
+        $password = $this->encoder->hashPassword($user, $plainPassword);
+
+        $user->setPassword($password);
+
+        $this->userRepository->save($user, true);
+
+        return $user;
+    }
 }
