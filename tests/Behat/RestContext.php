@@ -8,10 +8,12 @@ use Behatch\Context\BaseContext;
 use Behatch\HttpCall\Request;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 class RestContext extends BaseContext
 {
     private Request\BrowserKit|Request\Goutte|Request $request;
+    protected ?string $token = null;
 
     public function __construct(Request $request)
     {
@@ -56,5 +58,50 @@ class RestContext extends BaseContext
 
             return json_encode($body->getRowsHash());
         }
+    }
+
+    //@Given /^I am logged with "([^"]*)" and "([^"]*)"$/
+
+    /**
+     * @Given I am logged with :email and :password
+     */
+    public function iAmLoggedWithAnd(string $email, string $plainPassword)
+    {
+
+        $rawBody = json_encode([
+           'email' => $email,
+           'password' => $plainPassword
+        ]);
+
+        $this->request->setHttpHeader("Content-Type", "application/json");
+        $response = $this->request->send(
+            HttpRequest::METHOD_GET,
+            $this->locatePath('/api/login'),
+            [],
+            [],
+            $rawBody
+        );
+
+        $json = json_decode($response->getContent());
+        if (!isset($json->token)) {
+            throw new \Exception("Invalid login response");
+        }
+        $this->token = $json->token;
+    }
+
+    /**
+     * @When user send a :method request to :url
+     */
+    public function userSendAGETRequestTo(string $method, string $url)
+    {
+        if (null === $this->token) {
+            throw new \Exception("User is not logged");
+        }
+
+        $this->request->setHttpHeader("Authorization", "Bearer $this->token");
+        return $this->request->send(
+            $method,
+            $this->locatePath($url)
+        );
     }
 }
