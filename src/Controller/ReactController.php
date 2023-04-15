@@ -13,7 +13,7 @@ class ReactController extends AbstractController
         name: 'app_react',
         requirements: ['route'=>'.+'],
         defaults: ['route'=>null],
-        priority: -1
+        priority: -2
     )]
     public function index(): Response
     {
