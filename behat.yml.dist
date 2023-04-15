@@ -4,6 +4,7 @@ default:
             contexts:
                 - App\Tests\Behat\RestContext
                 - App\Tests\Behat\ExceptionContext
+                - App\Tests\Behat\UserContext
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:context:browser
                 - behatch:context:json
