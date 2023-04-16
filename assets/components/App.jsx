@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router-dom';
 import { themeDark, themeWhite } from '../styles/theme';
 import AppLoad from '../routes/appload';
 import router from '../routes';
+import AlertPortal from './AlertPortal';
 
 function App() {
   const [theme, setTheme] = useState(themeWhite);
@@ -28,6 +29,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <React.Suspense fallback={<AppLoad />}>
+          <AlertPortal />
           <RouterProvider router={router} />
         </React.Suspense>
       </ThemeProvider>
