@@ -6,6 +6,7 @@ import ThemeSwitch from '../components/ThemeSwitch';
 
 function SignRoute({ mode }) {
   const [modeState, setMode] = useState(mode);
+  const [email, setEmail] = useState('');
 
   return (
     <>
@@ -17,8 +18,16 @@ function SignRoute({ mode }) {
       />
       {
         (modeState === 'up')
-          ? <SignUp signInCallback={() => setMode('in')} />
-          : <SignIn signUpCallback={() => setMode('up')} />
+          ? (
+            <SignUp
+              signInCallback={() => setMode('in')}
+              signUpCallback={(data) => {
+                setEmail(data.email);
+                setMode('in');
+              }}
+            />
+          )
+          : <SignIn signUpCallback={() => setMode('up')} defaultEmail={email} />
       }
     </>
   );
