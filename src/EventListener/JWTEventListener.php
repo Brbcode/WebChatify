@@ -4,6 +4,7 @@ namespace App\EventListener;
 
 use App\Controller\Api\FallbackController;
 use App\Entity\User;
+use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTNotFoundEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -50,5 +51,16 @@ class JWTEventListener
         );
 
         $event->setData($data);
+    }
+
+    public function onAuthFailureResponse(AuthenticationFailureEvent $event): void
+    {
+        $code = Response::HTTP_UNAUTHORIZED;
+        $response = new JsonResponse([
+            "message" => "Email or password are wrong",
+            "code" => $code
+        ], $code);
+
+        $event->setResponse($response);
     }
 }
