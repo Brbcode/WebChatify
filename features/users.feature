@@ -19,7 +19,7 @@ Feature:
       | password | plainPasswordasd   |
     Then the response status code should be 401
     And the JSON node "code" should be equal to 401
-    And the JSON node "message" should be equal to "Invalid credentials."
+    And the JSON node "message" should be equal to "Email or password are wrong"
 
   Scenario: Sign Up
     Given user with email "signup@domain.com" not exist
