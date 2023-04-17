@@ -36,6 +36,11 @@ services:
         tags:
           - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJWTNotFound }
 
+    app.event.jwt_success_authentication:
+        class: App\EventListener\JWTEventListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthSuccessResponse }
+
     # Fixtures processors
     App\Fixtures\Processors\UserProcessor:
       class: App\Fixtures\Processors\UserProcessor

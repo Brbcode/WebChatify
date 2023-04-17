@@ -3,6 +3,8 @@
 namespace App\EventListener;
 
 use App\Controller\Api\FallbackController;
+use App\Entity\User;
+use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTNotFoundEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,5 +28,27 @@ class JWTEventListener
         }
 
         $event->setResponse($response);
+    }
+
+    public function onAuthSuccessResponse(AuthenticationSuccessEvent $event): void
+    {
+        $user = $event->getUser();
+
+        if (!$user instanceof User) {
+            return;
+        }
+
+        $injectData = [
+            'email' => $user->getEmail(),
+            'displayName' => $user->getDisplayName(),
+            'roles' => $user->getRoles()
+        ];
+
+        $data = array_merge(
+            $injectData,
+            $event->getData()
+        );
+
+        $event->setData($data);
     }
 }

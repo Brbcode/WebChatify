@@ -8,6 +8,10 @@ Feature:
       | email    | example@domain.com |
       | password | plainPassword      |
     Then the JSON node "token" should exist
+    And the JSON node "email" should be equal to "example@domain.com"
+    And the JSON node "displayName" should be equal to "Basic User"
+    And the JSON node "roles" should have 1 element
+    And the JSON node "roles[0]" should be equal to "ROLE_USER"
 
   Scenario: User login with bad credentials
     When I send a POST request to "/api/login" with json body:
