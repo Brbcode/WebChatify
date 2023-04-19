@@ -2,12 +2,12 @@ import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { Box } from '@mui/material';
-import SignUp from '../components/SignUp';
-import SignIn from '../components/SignIn';
-import ThemeSwitch from '../components/ThemeSwitch';
+import SignUp from './SignUp';
+import SignIn from './SignIn';
+import ThemeSwitch from './ThemeSwitch';
 import '../styles/transition/slide-fade.css';
 
-function SignRoute({ mode }) {
+function SignGroup({ mode }) {
   const [modeState, setMode] = useState(mode);
   const [email, setEmail] = useState('');
   const signUpRef = useRef(null);
@@ -64,12 +64,12 @@ function SignRoute({ mode }) {
   );
 }
 
-SignRoute.propTypes = {
+SignGroup.propTypes = {
   mode: PropTypes.oneOf(['up', 'in']),
 };
 
-SignRoute.defaultProps = {
+SignGroup.defaultProps = {
   mode: 'up',
 };
 
-export default SignRoute;
+export default SignGroup;
