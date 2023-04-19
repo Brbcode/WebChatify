@@ -5,8 +5,9 @@ import {
 } from '@mui/material';
 import { CancelTwoTone, CheckCircleTwoTone, LockOutlined } from '@mui/icons-material';
 import PropTypes from 'prop-types';
+import Api from '../api';
 
-function SignUp({ signInCallback, pwdRegex }) {
+function SignUp({ signInCallback, signUpCallback, pwdRegex }) {
   const [busy, setBusy] = useState(false);
   const [pwd, setPwd] = useState('');
   const [confirmPwd, setConfirmPwd] = useState(pwd);
@@ -20,7 +21,24 @@ function SignUp({ signInCallback, pwdRegex }) {
     }
     setPwdError(false);
     setBusy(true);
-    // TODO fetch
+    const { email, displayName, password } = event.target;
+    Api.post('signup', {
+      email: email.value,
+      displayName: displayName.value,
+      password: password.value,
+    })
+      .then(({ data }) => {
+        window.dispatchEvent(new CustomEvent('notification', {
+          detail: {
+            severity: 'success',
+            message: 'User registered successfully',
+          },
+        }));
+        signUpCallback({ email: data.email, displayName: data.displayName });
+        console.info('User registered successfully');
+      })
+      .catch(() => { /* ignore */ })
+      .finally(() => { setBusy(false); });
   };
 
   return (
@@ -125,11 +143,13 @@ function SignUp({ signInCallback, pwdRegex }) {
 
 SignUp.propTypes = {
   signInCallback: PropTypes.func,
+  signUpCallback: PropTypes.func,
   pwdRegex: PropTypes.shape(RegExp),
 };
 
 SignUp.defaultProps = {
   signInCallback: (event) => { event.preventDefault(); },
+  signUpCallback: (event) => { event.preventDefault(); },
   pwdRegex: /.{6,}/,
 };
 

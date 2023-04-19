@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import {
-  Alert,
   Avatar,
   Box,
   Button,
-  CircularProgress, Collapse,
+  CircularProgress,
   Container,
   Grid,
   Link,
@@ -13,15 +12,32 @@ import {
 } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import PropTypes from 'prop-types';
+import Api from '../api';
 
-function SignIn({ signUpCallback }) {
+function SignIn({ signUpCallback, signInCallback, defaultEmail }) {
   const [busy, setBusy] = useState(false);
-  const [authError, setAuthError] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setBusy(true);
-    // TODO fetch
+    const { email, password } = event.target;
+    Api.post('login', {
+      email: email.value,
+      password: password.value,
+    })
+      .then(({ data }) => {
+        const msg = `Welcome, ${data.displayName}!`;
+        window.dispatchEvent(new CustomEvent('notification', {
+          detail: {
+            severity: 'success',
+            message: msg,
+          },
+        }));
+        console.info(msg);
+        signInCallback(data);
+      })
+      .catch(() => { /* ignore */ })
+      .finally(() => { setBusy(false); });
   };
 
   return (
@@ -40,7 +56,7 @@ function SignIn({ signUpCallback }) {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -50,6 +66,7 @@ function SignIn({ signUpCallback }) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                defaultValue={defaultEmail}
               />
             </Grid>
             <Grid item xs={12}>
@@ -63,9 +80,6 @@ function SignIn({ signUpCallback }) {
               />
             </Grid>
           </Grid>
-          <Collapse in={authError} sx={{ mt: 2, mb: 1 }}>
-            <Alert severity="error">Password is incorrect.</Alert>
-          </Collapse>
           <Button
             type="submit"
             fullWidth
@@ -90,10 +104,14 @@ function SignIn({ signUpCallback }) {
 
 SignIn.propTypes = {
   signUpCallback: PropTypes.func,
+  signInCallback: PropTypes.func,
+  defaultEmail: PropTypes.string,
 };
 
 SignIn.defaultProps = {
   signUpCallback: (event) => { event.preventDefault(); },
+  signInCallback: () => {},
+  defaultEmail: '',
 };
 
 export default SignIn;
