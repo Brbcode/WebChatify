@@ -7,7 +7,7 @@ import SignIn from './SignIn';
 import ThemeSwitch from './ThemeSwitch';
 import '../styles/transition/slide-fade.css';
 
-function SignGroup({ mode }) {
+function SignGroup({ mode, signInCallback }) {
   const [modeState, setMode] = useState(mode);
   const [email, setEmail] = useState('');
   const signUpRef = useRef(null);
@@ -52,6 +52,7 @@ function SignGroup({ mode }) {
                     : (
                       <SignIn
                         signUpCallback={() => setMode('up')}
+                        signInCallback={signInCallback}
                         defaultEmail={email}
                       />
                     )
@@ -66,10 +67,12 @@ function SignGroup({ mode }) {
 
 SignGroup.propTypes = {
   mode: PropTypes.oneOf(['up', 'in']),
+  signInCallback: PropTypes.func,
 };
 
 SignGroup.defaultProps = {
   mode: 'up',
+  signInCallback: () => {},
 };
 
 export default SignGroup;
