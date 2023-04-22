@@ -45,7 +45,7 @@ init:
 	@echo "###< Hooks Install ###"
 	@echo
 	@echo "###> Generate the SSL keys ###"
-	$(DOCKER_CMD) exec app "php bin/console lexik:jwt:generate-keypair --overwrite"
+	$(DOCKER_CMD) exec app "php bin/console lexik:jwt:generate-keypair"
 	@echo "###< Generate the SSL keys ###"
 
 behat:
