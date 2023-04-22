@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import PropTypes from 'prop-types';
+import { ThemeContext } from './ThemeContextProvider';
 
 const StyledThemeSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -50,49 +51,32 @@ const StyledThemeSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-function ThemeSwitch({
-  defaultChecked, onChange, inputProps, ...props
-}) {
-  const theme = sessionStorage.getItem('theme') ?? 'white';
-  const handleChange = (event) => {
-    const value = event.target.checked ? 'white' : 'dark';
-    sessionStorage.setItem('theme', value);
-    window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: value } }));
-  };
+const sessionChecked = (sessionStorage.getItem('theme') ?? 'white') === 'white';
 
-  function getDefaultChecked() {
-    switch (theme) {
-      case 'dark':
-        return false;
-      case 'white':
-        return true;
-      default:
-        throw new Error('Invalid theme value');
-    }
-  }
+function ThemeSwitch({ onChange, defaultChecked, ...props }) {
+  const { theme, updateTheme } = useContext(ThemeContext);
 
   return (
     <StyledThemeSwitch
-      defaultChecked={getDefaultChecked()}
-      onChange={handleChange}
-      inputProps={inputProps}
-      /* eslint-disable-next-line react/jsx-props-no-spreading */
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
+      defaultChecked={sessionChecked}
+      onChange={(e) => {
+        updateTheme(theme === 'white' ? 'dark' : 'white');
+        onChange(e);
+      }}
     />
   );
 }
 
 ThemeSwitch.propTypes = {
-  defaultChecked: PropTypes.bool,
   onChange: PropTypes.func,
-  // eslint-disable-next-line react/forbid-prop-types
-  inputProps: PropTypes.object,
+  defaultChecked: PropTypes.bool,
 };
 
 ThemeSwitch.defaultProps = {
-  defaultChecked: true,
   onChange: () => {},
-  inputProps: { 'aria-label': 'Theme switcher' },
+  defaultChecked: true,
 };
 
 export default ThemeSwitch;
