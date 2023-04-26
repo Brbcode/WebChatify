@@ -13,6 +13,19 @@ RUN apt-get update && apt-get install -yq gnupg && \
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
     && apt install symfony-cli
 
+# XDebug
+RUN apt-get install libpq-dev -y
+
+RUN pecl install xdebug && \
+    docker-php-ext-enable xdebug
+
+RUN touch /var/log/xdebug.log
+
+RUN chown www-data:www-data /var/log/xdebug.log && \
+    chmod 777 /var/log/xdebug.log
+
+COPY .docker/app/php.ini /usr/local/etc/php/conf.d/
+
 # Clean
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
