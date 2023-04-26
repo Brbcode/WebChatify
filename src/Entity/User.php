@@ -6,11 +6,11 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
     #[ORM\Column(length: 180, unique: true)]
     private string $email;
 
@@ -26,17 +26,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private string $displayName;
 
+    #[ORM\Id]
+    #[ORM\Column(type: 'ulid', unique: true)]
+    private Ulid $id;
+
     /**
      * @param string $email
      * @param string $password
      * @param array $roles
      */
-    public function __construct(string $email, string $displayName, string $password, array $roles = [])
-    {
+    public function __construct(
+        string $email,
+        string $displayName,
+        string $password,
+        array $roles = [],
+        Ulid|string|null $id = null
+    ) {
         $this->email = $email;
         $this->roles = $roles;
         $this->password = $password;
         $this->displayName = $displayName;
+
+        if (is_string($id)) {
+            $this->id = Ulid::fromString($id);
+        } else {
+            $this->id = $id ?? new Ulid();
+        }
     }
 
 
@@ -115,5 +130,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->displayName = $displayName;
 
         return $this;
+    }
+
+    public function getId(): Ulid
+    {
+        return $this->id;
     }
 }

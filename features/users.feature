@@ -8,6 +8,7 @@ Feature:
       | email    | example@domain.com |
       | password | plainPassword      |
     Then the JSON node "token" should exist
+    And the JSON node "id" should exist
     And the JSON node "email" should be equal to "example@domain.com"
     And the JSON node "displayName" should be equal to "Basic User"
     And the JSON node "roles" should have 1 element
@@ -27,6 +28,7 @@ Feature:
       | displayName | New User          |
       | email       | signup@domain.com |
       | password    | plainPassword     |
+    Then the JSON node "id" should exist
     Then the JSON node "displayName" should be equal to "New User"
     Then the JSON node "email" should be equal to "signup@domain.com"
     Then the JSON node "roles[0]" should be equal to "ROLE_USER"
