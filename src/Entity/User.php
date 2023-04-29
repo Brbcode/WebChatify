@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\DomainException\InvalidArgumentException;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -11,6 +12,8 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    private const NAME_LENGTH = 128;
+
     #[ORM\Column(length: 180, unique: true)]
     private string $email;
 
@@ -20,10 +23,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(length: 60)]
     private string $password;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: self::NAME_LENGTH)]
     private string $displayName;
 
     #[ORM\Id]
@@ -42,6 +45,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         array $roles = [],
         Ulid|string|null $id = null
     ) {
+        self::assertEmail($email);
+        self::assertDisplayName($displayName);
+
         $this->email = $email;
         $this->roles = $roles;
         $this->password = $password;
@@ -54,7 +60,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
     }
 
-
     public function getEmail(): string
     {
         return $this->email;
@@ -62,6 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(string $email): self
     {
+        self::assertEmail($email);
         $this->email = $email;
 
         return $this;
@@ -127,6 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setDisplayName(string $displayName): self
     {
+        self::assertDisplayName($displayName);
         $this->displayName = $displayName;
 
         return $this;
@@ -135,5 +142,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): Ulid
     {
         return $this->id;
+    }
+
+    public static function assertEmail(string $email): void
+    {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException('Email not valid');
+        }
+    }
+
+    public static function assertDisplayName(string $name): void
+    {
+        $nameLength = strlen($name);
+        if (!($nameLength>0 && $nameLength<self::NAME_LENGTH)) {
+            throw new InvalidArgumentException('Invalid display name');
+        }
     }
 }

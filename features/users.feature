@@ -42,3 +42,43 @@ Feature:
     Then the response status code should be 400
     And the JSON node "code" should be equal to 400
     And the JSON node "message" should be equal to "Email is already registered"
+
+  Scenario: Sign Up with wrong email return an error
+    Given user with email "wrongEmail" not exist
+    When I send a POST request to "/api/signup" with json body:
+      | displayName | New User           |
+      | email       | wrongEmail         |
+      | password    | randomPassword     |
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Email not valid"
+
+  Scenario: Sign Up with too long email return an error
+    Given user with email "FJOMRTGGIHYZXNKPYCJUVQLAWSDEBNPVTIQBLRUEAXKZDSCWHNYVOFMAKPXRUJCXNGLQSBVPIEWKDYTOZMGGIHYZXNKPYCJUVQLAWPVTIQBLRUEAXKZVOFZ@gmail.com" not exist
+    When I send a POST request to "/api/signup" with json body:
+      | displayName | New User           |
+      | email       | FJOMRTGGIHYZXNKPYCJUVQLAWSDEBNPVTIQBLRUEAXKZDSCWHNYVOFMAKPXRUJCXNGLQSBVPIEWKDYTOZMGGIHYZXNKPYCJUVQLAWPVTIQBLRUEAXKZVOFZ@gmail.com |
+      | password    | randomPassword     |
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Email not valid"
+
+  Scenario: Sign Up with empty name return an error
+    Given user with email "emptyUserName@domain.com" not exist
+    When I send a POST request to "/api/signup" with json body:
+      | displayName |                          |
+      | email       | emptyUserName@domain.com |
+      | password    | randomPassword           |
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Invalid display name"
+
+  Scenario: Sign Up with to long name return an error
+    Given user with email "tooLongUserName@domain.com" not exist
+    When I send a POST request to "/api/signup" with json body:
+      | displayName | 5GscFWJ7d9RbXrZKvA2gQBaPzVq8NmuCn3wYLDtpeyEixO6TkMfHhU0IoSl1j4PEV5GscFWJ7d9RbXrZKvBaPzVq8NmuCn3wYLDtpNmuCn3wYLDtpeyEixO6TFWJ7d9Rb |
+      | email       | tooLongUserName@domain.com |
+      | password    | randomPassword             |
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Invalid display name"
