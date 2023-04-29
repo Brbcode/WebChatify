@@ -22,7 +22,7 @@ class JWTEventListener
         if ($routeName === FallbackController::ROUTE) {
             $response = FallbackController::getNotFoundResponse();
         } else {
-            $code = Response::HTTP_NOT_FOUND;
+            $code = Response::HTTP_UNAUTHORIZED;
             $response = new JsonResponse([
                 'code' => $code,
                 'message' => 'Permission denied'
