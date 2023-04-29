@@ -2,7 +2,7 @@
 
 namespace App\Controller\Api;
 
-use App\DTO\User\UserMinDTO;
+use App\DTO\User\UserDTO;
 use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,6 +33,6 @@ class SignUpController extends AbstractController
 
         $user = $service->signUp($body->email, $body->displayName, $body->password);
 
-        return $this->json(UserMinDTO::build($user));
+        return $this->json(UserDTO::build($user));
     }
 }

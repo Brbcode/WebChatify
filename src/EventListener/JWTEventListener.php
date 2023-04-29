@@ -3,7 +3,7 @@
 namespace App\EventListener;
 
 use App\Controller\Api\FallbackController;
-use App\DTO\User\UserMinDTO;
+use App\DTO\User\UserDTO;
 use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
@@ -40,7 +40,7 @@ class JWTEventListener
             return;
         }
 
-        $injectData = UserMinDTO::build($user);
+        $injectData = UserDTO::build($user);
 
         $data = array_merge(
             $injectData,
