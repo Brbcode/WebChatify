@@ -104,4 +104,24 @@ class RestContext extends BaseContext
             $this->locatePath($url)
         );
     }
+
+    /**
+     * @When user send a :method request to :url with json body:
+     */
+    public function userSendARequestToWithJsonBody(string $method, string $url, PyStringNode|TableNode $body)
+    {
+        if (null === $this->token) {
+            throw new \Exception("User is not logged");
+        }
+
+        $this->request->setHttpHeader("Authorization", "Bearer $this->token");
+        $rawBody = static::getRawJsonBody($body);
+        return $this->request->send(
+            $method,
+            $this->locatePath($url),
+            [],
+            [],
+            $rawBody
+        );
+    }
 }
