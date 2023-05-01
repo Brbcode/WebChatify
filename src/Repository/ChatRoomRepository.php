@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\ChatRoom;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<ChatRoom>
@@ -37,6 +38,21 @@ class ChatRoomRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getChatRoom(ChatRoom|Uuid|string $chatroom): ChatRoom|null
+    {
+        if ($chatroom instanceof ChatRoom) {
+            return $this->find($chatroom->getId()->jsonSerialize());
+        }
+
+        if (is_string($chatroom)) {
+            return Uuid::isValid($chatroom)
+                ? $this->find($chatroom)
+                : null;
+        }
+
+        return $this->getChatRoom($chatroom->jsonSerialize());
     }
 
 //    /**
