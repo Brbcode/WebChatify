@@ -113,7 +113,12 @@ class ChatRoom
      */
     public function getParticipants(): Collection
     {
-        return $this->participants;
+        $selfParticipant = new Participant($this->owner, $this, $this->getCreatedAt());
+
+        return new ArrayCollection([
+            $selfParticipant,
+            ...$this->participants->toArray()
+        ]);
     }
 
     public function addParticipant(Participant $participant): self

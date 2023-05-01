@@ -2,8 +2,10 @@
 
 namespace App\DTO\ChatRoom;
 
+use App\DTO\Participant\ParticipantMinDTO;
 use App\DTO\User\UserMinDTO;
 use App\Entity\ChatRoom;
+use App\Entity\Participant;
 
 class ChatRoomMinDTO
 {
@@ -14,6 +16,10 @@ class ChatRoomMinDTO
         $response['owner'] =  UserMinDTO::build($chatRoom->getOwner());
         $response['title'] = $chatRoom->getTitle();
         $response['createdAt'] = $chatRoom->getCreatedAt();
+        $response['participants'] = array_map(
+            static fn(Participant $p)=>ParticipantMinDTO::build($p),
+            $chatRoom->getParticipants()->toArray()
+        );
 
         return $response;
     }

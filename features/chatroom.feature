@@ -10,10 +10,16 @@ Feature:
     And the JSON node "id" should exist
     And the JSON node "title" should be equal to "newChat"
     And the JSON node "createdAt" should exist
-    And the JSON node "owner.id" should exist
+    And the JSON node "owner.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
     And the JSON node "owner.email" should not exist
     And the JSON node "owner.roles" should not exist
     And the JSON node "owner.displayName" should be equal to "Chat Owner User"
+    And the JSON node "participants" should have 1 element
+    And the JSON node "participants[0].id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "participants[0].displayName" should be equal to "Chat Owner User"
+    And the JSON node "participants[0].joinAt" should exist
+    And the JSON node "participants[0].email" should not exist
+    And the JSON node "participants[0].roles" should not exist
 
   Scenario: Create ChatRoom without be logged
     When I send a "POST" request to "/api/chat/newChat"
