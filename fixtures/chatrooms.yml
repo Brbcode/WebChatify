@@ -9,3 +9,9 @@ App\Entity\ChatRoom:
         owner: '@chat_owner_user'
         title: 'Test Chat with Participants'
         id: 'd6af44ed-1a6d-4c45-b8be-b880cee13b10'
+
+  test_join_chat:
+    __construct:
+        owner: '@chat_owner_user'
+        title: 'Test Join Chat'
+        id: '35afea23-ec2a-4d26-977b-9240b6bdfdb9'
