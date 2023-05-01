@@ -1,0 +1,5 @@
+App\Entity\ChatRoom:
+  test_chat:
+    __construct:
+      owner: '@chat_owner_user'
+      title: 'Test Chat'

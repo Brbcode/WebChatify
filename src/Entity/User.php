@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\DomainException\InvalidArgumentException;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -33,6 +35,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'ulid', unique: true)]
     private Ulid $id;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: ChatRoom::class)]
+    private Collection $chatRooms;
+
     /**
      * @param string $email
      * @param string $password
@@ -58,6 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         } else {
             $this->id = $id ?? new Ulid();
         }
+        $this->chatRooms = new ArrayCollection();
     }
 
     public function getEmail(): string
@@ -157,5 +163,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!($nameLength>0 && $nameLength<self::NAME_LENGTH)) {
             throw new InvalidArgumentException('Invalid display name');
         }
+    }
+
+    /**
+     * @return Collection<int, ChatRoom>
+     */
+    public function getChatRooms(): Collection
+    {
+        return $this->chatRooms;
+    }
+
+    public function addChatRoom(ChatRoom $chatRoom): self
+    {
+        if (!$this->chatRooms->contains($chatRoom)) {
+            $this->chatRooms->add($chatRoom);
+            $chatRoom->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChatRoom(ChatRoom $chatRoom): self
+    {
+        if ($this->chatRooms->removeElement($chatRoom)) {
+            // set the owning side to null (unless already changed)
+            if ($chatRoom->getOwner() === $this) {
+                $chatRoom->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }

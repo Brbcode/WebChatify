@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Entity;
+
+use App\DomainException\InvalidArgumentException;
+use App\Repository\ChatRoomRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
+
+#[ORM\Entity(repositoryClass: ChatRoomRepository::class)]
+class ChatRoom
+{
+    private const TITLE_LENGTH = 128;
+
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private Uuid $id;
+
+    #[ORM\Column(length: self::TITLE_LENGTH)]
+    private string $title;
+
+    #[ORM\Column]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\ManyToOne(inversedBy: 'chatRooms')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $owner;
+
+    /**
+     * @param User $owner
+     * @param string $title
+     * @param Uuid|string|null $id
+     * @param \DateTimeImmutable|null $createdAt
+     */
+    public function __construct(
+        User $owner,
+        string $title,
+        Uuid|string|null $id = null,
+        ?\DateTimeImmutable $createdAt = null
+    ) {
+        self::assertTitle($title);
+
+        $this->title = $title;
+        $this->createdAt = $createdAt ?? new \DateTimeImmutable();
+        $this->owner = $owner;
+
+        if (is_string($id)) {
+            $this->id = Uuid::fromString($id);
+        } else {
+            $this->id = $id ?? Uuid::v4();
+        }
+    }
+
+
+    public function getId(): Uuid
+    {
+        return $this->id;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        self::assertTitle($title);
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getOwner(): User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    public static function assertTitle(string $title): void
+    {
+        $titleLength = strlen($title);
+        if (!($titleLength>0 && $titleLength<self::TITLE_LENGTH)) {
+            throw new InvalidArgumentException('Invalid title');
+        }
+    }
+}

@@ -4,3 +4,9 @@ App\Entity\User:
       email: 'example@domain.com'
       displayName: 'Basic User'
       password: 'plainPassword'
+
+  chat_owner_user:
+    __construct:
+        email: 'chatOwner@domain.com'
+        displayName: 'Chat Owner User'
+        password: 'password'
