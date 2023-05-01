@@ -10,3 +10,10 @@ App\Entity\User:
         email: 'chatOwner@domain.com'
         displayName: 'Chat Owner User'
         password: 'password'
+
+  participant_user_0:
+    __construct:
+      email: 'testParcitipant@domain.com'
+      displayName: 'Participant User'
+      password: 'password'
+      id: '01GZBRB9CBKTQ33T6A15JGRPDR'

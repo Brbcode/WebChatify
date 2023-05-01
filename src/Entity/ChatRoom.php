@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\DomainException\InvalidArgumentException;
 use App\Repository\ChatRoomRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
@@ -25,6 +27,9 @@ class ChatRoom
     #[ORM\ManyToOne(inversedBy: 'chatRooms')]
     #[ORM\JoinColumn(nullable: false)]
     private User $owner;
+
+    #[ORM\OneToMany(mappedBy: 'chatroom', targetEntity: Participant::class, orphanRemoval: true)]
+    private Collection $participants;
 
     /**
      * @param User $owner
@@ -49,6 +54,7 @@ class ChatRoom
         } else {
             $this->id = $id ?? Uuid::v4();
         }
+        $this->participants = new ArrayCollection();
     }
 
 
@@ -100,5 +106,28 @@ class ChatRoom
         if (!($titleLength>0 && $titleLength<self::TITLE_LENGTH)) {
             throw new InvalidArgumentException('Invalid title');
         }
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(Participant $participant): self
+    {
+        if (!$this->participants->contains($participant)
+            && $participant->getChatroom() === $this) {
+            $this->participants->add($participant);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Participant $participant): self
+    {
+        throw new \LogicException("Not implemented yet");
     }
 }

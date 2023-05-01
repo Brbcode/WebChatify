@@ -1,0 +1,5 @@
+App\Entity\Participant:
+  participant_0:
+    __construct:
+      user: '@participant_user_0'
+      chatroom: '@test_fill_chat'
