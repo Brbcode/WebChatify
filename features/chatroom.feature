@@ -3,6 +3,25 @@ Feature:
   As a user
   I want to be able
 
+  Scenario: Get users ChatRooms
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "GET" request to "/api/chat"
+    Then the response status code should be 200
+    Then the JSON node "owner.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    Then the JSON node "owner.displayName" should be equal to "Chat Owner User"
+    Then the JSON node "chatrooms" should have 3 elements
+    Then the JSON node "chatrooms[0].id" should exist
+    Then the JSON node "chatrooms[0].title" should exist
+    Then the JSON node "chatrooms[0].createdAt" should exist
+    Then the JSON node "chatrooms[0].participants" should not exist
+    Then the JSON node "chatrooms[0].participantsCount" should exist
+
+  Scenario: Get users ChatRooms without be logged
+    When I send a "POST" request to "/api/chat"
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
   Scenario: Create ChatRoom with too long title return error
     Given I am logged with "chatOwner@domain.com" and "password"
     When user send a "POST" request to "/api/chat/newChat"
