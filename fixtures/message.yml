@@ -1,0 +1,7 @@
+App\Entity\Message:
+  example_msg:
+    __construct:
+      sender: '@chat_owner_user'
+      chatroom: '@test_fill_chat'
+      content: 'Hello World!'
+      id: 'e4eefeba-9e27-460b-9cfd-b3954b618b65'
