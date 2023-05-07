@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Repository\ChatRoomRepository;
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
@@ -62,5 +63,26 @@ class MessageService
         $this->messageRepository->save($message, true);
 
         return $message;
+    }
+
+    public function getAllMessages(
+        User|Ulid|string     $user,
+        ChatRoom|Uuid|string $chatroom,
+    ): Collection {
+        $user = $this->userRepository->getUser($user);
+        $chatroom = $this->chatRoomRepository->getChatRoom($chatroom);
+
+        if (null === $chatroom) {
+            throw Exception::build("Chatroom not found", Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($user === null ||
+            !$chatroom->getParticipants()
+                ->exists(static fn($k, Participant $p)=>$p->getUser()===$user)
+        ) {
+            throw PermissionDeniedException::build();
+        }
+
+        return $chatroom->getMessages();
     }
 }
