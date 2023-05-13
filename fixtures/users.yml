@@ -25,3 +25,12 @@ App\Entity\User:
       displayName: 'Participant User 1'
       password: 'password'
       id: '01GZBZZHZ5CEMTP0MRNZ04D3RE'
+
+  admin_user_0:
+    __construct:
+      email: 'testAdmin@domain.com'
+      displayName: 'Admin User'
+      password: 'password'
+      id: '01H0AQ397CFMBVRXDABC1FEHRW'
+      roles:
+        - 'ROLE_ADMIN'

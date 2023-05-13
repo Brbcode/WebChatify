@@ -72,6 +72,26 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->getUser($user->jsonSerialize());
     }
 
+    /**
+     * @param string|null $exceptId
+     * @return User[]
+     */
+    public function getAllSortByDisplayName(?string $exceptId = null): array
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        if (null !== $exceptId) {
+            $qb->where('u.id <> :exceptId')
+                ->setParameter('exceptId', $exceptId)
+            ;
+        }
+
+        return $qb->orderBy('u.id', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

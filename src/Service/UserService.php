@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\DomainException\PermissionDeniedException;
 use App\DomainException\User\EmailAlreadyRegistered;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Uid\Ulid;
 
 class UserService
 {
@@ -37,5 +39,24 @@ class UserService
         $this->userRepository->save($user, true);
 
         return $user;
+    }
+
+    /**
+     * @param User|Ulid|string $user
+     * @return User[]
+     */
+    public function getAll(User|Ulid|string $user): array
+    {
+        $user = $this->userRepository->getUser($user);
+
+        if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+            throw PermissionDeniedException::build();
+        }
+
+        return $this->userRepository
+            ->getAllSortByDisplayName(
+                $user->getId()->jsonSerialize()
+            )
+        ;
     }
 }

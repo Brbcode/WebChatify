@@ -3,6 +3,34 @@ Feature:
   As a user
   I want to be able
 
+  Scenario: Admin get all users
+    Given I am logged with "testAdmin@domain.com" and "password"
+    When user send a GET request to "/api/users"
+    Then the response status code should be 200
+    And the JSON node "root" should have 6 elements
+    And the JSON node "root[0].id" should be equal to "01H0AQ397CFMBVRXDABC1FEHRW"
+    And the JSON node "root[0].email" should be equal to "testAdmin@domain.com"
+    And the JSON node "root[0].displayName" should be equal to "Admin User"
+    And the JSON node "root[0].roles" should have 2 elements
+    And the JSON node "root[0].roles[0]" should be equal to "ROLE_ADMIN"
+    And the JSON node "root[1].id" should exist
+    And the JSON node "root[1].displayName" should exist
+    And the JSON node "root[1].email" should not exist
+    And the JSON node "root[1].roles" should not exist
+
+  Scenario: Not admin user try get all users
+    Given I am logged with "example@domain.com" and "plainPassword"
+    When user send a GET request to "/api/users"
+    Then the response status code should be 401
+    Then the JSON node "code" should be equal to 401
+    Then the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: Not logged user try get all users
+    When I send a GET request to "/api/users"
+    Then the response status code should be 401
+    Then the JSON node "code" should be equal to 401
+    Then the JSON node "message" should be equal to "Permission denied"
+
   Scenario: User successful login
     When I send a POST request to "/api/login" with json body:
       | email    | example@domain.com |
