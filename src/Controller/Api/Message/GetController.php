@@ -32,9 +32,6 @@ class GetController extends AbstractController
         Security $security
     ): JsonResponse {
         $sender = $security->getUser();
-        if (null === $sender) {
-            throw PermissionDeniedException::build();
-        }
 
         $allMessages = $service->getAllMessages($sender, $chatroomId);
 

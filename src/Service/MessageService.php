@@ -71,8 +71,8 @@ class MessageService
     }
 
     public function getAllMessages(
-        User|Ulid|string     $user,
-        ChatRoom|Uuid|string $chatroom,
+        User|Ulid|string|null     $user,
+        ChatRoom|Uuid|string|null $chatroom,
     ): Collection {
         $user = $this->userRepository->getUser($user);
         $chatroom = $this->chatRoomRepository->getChatRoom($chatroom);
