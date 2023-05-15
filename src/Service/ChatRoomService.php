@@ -45,8 +45,8 @@ class ChatRoomService
     }
 
     public function joinChatRoom(
-        User|Ulid|string $user,
-        ChatRoom|Uuid|string $chatroom
+        User|Ulid|string|null $user,
+        ChatRoom|Uuid|string|null $chatroom
     ): ChatRoom {
         $sender = $this->security->getUser();
         $user = $this->userRepository->getUser($user);

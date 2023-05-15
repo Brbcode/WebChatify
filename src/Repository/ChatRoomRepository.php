@@ -40,8 +40,12 @@ class ChatRoomRepository extends ServiceEntityRepository
         }
     }
 
-    public function getChatRoom(ChatRoom|Uuid|string $chatroom): ChatRoom|null
+    public function getChatRoom(ChatRoom|Uuid|string|null $chatroom): ChatRoom|null
     {
+        if (null === $chatroom) {
+            return null;
+        }
+
         if ($chatroom instanceof ChatRoom) {
             return $this->find($chatroom->getId()->jsonSerialize());
         }
