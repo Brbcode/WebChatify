@@ -161,3 +161,52 @@ Feature:
     Then the response status code should be 400
     And the JSON node "code" should be equal to 400
     And the JSON node "message" should be equal to "Message not found"
+
+  Scenario: Owner edit own specific message
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "PATCH" request to "/api/message/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed" with json body:
+      | content | Hello World!! |
+    Then the response status code should be 200
+    And the JSON node 'id' should be equal to "74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    And the JSON node 'createdAt' should exist
+    And the JSON node 'editAt' should exist
+    And the JSON node 'sender' should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node 'content' should be equal to "Hello World!!"
+
+  Scenario: Participants edit specific message
+    Given I am logged with "testParcitipant@domain.com" and "password"
+    When user send a "PATCH" request to "/api/message/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed" with json body:
+      | content | Hello World!! |
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: Try edit own specific message without be logged
+    When I send a "PATCH" request to "/api/message/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed" with json body:
+      | content | Hello World!! |
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: Owner edit own specific invalid message
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "PATCH" request to "/api/message/invalid-if" with json body:
+      | content | Hello World!! |
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Message not found"
+
+  Scenario: Owner edit own specific message to empty content
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "PATCH" request to "/api/message/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed" with json body:
+      | content |  |
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Empty content are not allowed"
+
+  Scenario: Owner edit own specific message without body
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "PATCH" request to "/api/message/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Empty content are not allowed"
