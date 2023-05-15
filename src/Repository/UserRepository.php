@@ -57,8 +57,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
-    public function getUser(User|Ulid|string $user): User|null
+    public function getUser(User|Ulid|string|null $user): User|null
     {
+        if (null === $user) {
+            return null;
+        }
+
         if ($user instanceof User) {
             return $this->findOneBy(['id' => $user->getId()->jsonSerialize()]);
         }

@@ -45,11 +45,11 @@ class UserService
      * @param User|Ulid|string $user
      * @return User[]
      */
-    public function getAll(User|Ulid|string $user): array
+    public function getAll(User|Ulid|string|null $user): array
     {
         $user = $this->userRepository->getUser($user);
 
-        if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+        if (null === $user || !in_array('ROLE_ADMIN', $user->getRoles())) {
             throw PermissionDeniedException::build();
         }
 
