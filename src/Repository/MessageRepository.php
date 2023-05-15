@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Message;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Message>
@@ -37,6 +38,21 @@ class MessageRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getMessage(Message|Uuid|string $message): Message|null
+    {
+        if ($message instanceof Message) {
+            return $this->findOneBy(['id' => $message->getId()->jsonSerialize()]);
+        }
+
+        if (is_string($message)) {
+            return Uuid::isValid($message)
+                ? $this->findOneBy(['id' => $message])
+                : null;
+        }
+
+        return $this->getMessage($message->jsonSerialize());
     }
 
 //    /**

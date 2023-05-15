@@ -85,4 +85,18 @@ class MessageService
 
         return $chatroom->getMessages();
     }
+
+    public function getMessage(User|Ulid|string $user, Message|Uuid|string $message): Message
+    {
+        $user = $this->userRepository->getUser($user);
+        $message = $this->messageRepository->getMessage($message);
+
+        if (null === $user || !$message->getChatroom()->getParticipants()->exists(
+            static fn($k, Participant $p)=>$p->getUser()===$user
+        )) {
+            throw PermissionDeniedException::build();
+        }
+
+        return $message;
+    }
 }
