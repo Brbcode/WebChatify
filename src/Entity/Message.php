@@ -151,6 +151,8 @@ class Message
         if (!$this->editRecords->contains($editRecord)) {
             $this->editRecords->add($editRecord);
             $editRecord->setMessage($this);
+            $this->setContent($editRecord->getEditedContent());
+            $this->setEditAt($editRecord->getEditAt());
         }
 
         return $this;

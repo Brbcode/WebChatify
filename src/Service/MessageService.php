@@ -7,9 +7,11 @@ use App\DomainException\InvalidArgumentException;
 use App\DomainException\PermissionDeniedException;
 use App\Entity\ChatRoom;
 use App\Entity\Message;
+use App\Entity\MessageEditRecord;
 use App\Entity\Participant;
 use App\Entity\User;
 use App\Repository\ChatRoomRepository;
+use App\Repository\MessageEditRecordRepository;
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
@@ -24,21 +26,24 @@ class MessageService
     private ChatRoomRepository $chatRoomRepository;
     private MessageRepository $messageRepository;
     private Security $security;
+    private MessageEditRecordRepository $messageEditRecordRepository;
 
     /**
      * @param UserRepository $userRepository
      * @param ChatRoomRepository $chatRoomRepository
      */
     public function __construct(
-        UserRepository $userRepository,
-        ChatRoomRepository $chatRoomRepository,
-        MessageRepository $messageRepository,
-        Security $security
+        UserRepository              $userRepository,
+        ChatRoomRepository          $chatRoomRepository,
+        MessageRepository           $messageRepository,
+        MessageEditRecordRepository $messageEditRecordRepository,
+        Security                    $security
     ) {
         $this->userRepository = $userRepository;
         $this->chatRoomRepository = $chatRoomRepository;
         $this->messageRepository = $messageRepository;
         $this->security = $security;
+        $this->messageEditRecordRepository = $messageEditRecordRepository;
     }
 
     public function registerMessage(
@@ -105,6 +110,32 @@ class MessageService
         )) {
             throw PermissionDeniedException::build();
         }
+
+        return $message;
+    }
+
+    public function editMessage(Message|Uuid|string|null $message, string $content): Message
+    {
+        $sender = $this->security->getUser();
+        $message = $this->messageRepository->getMessage($message);
+
+        if (null === $message) {
+            throw InvalidArgumentException::build('Message not found');
+        }
+
+        if (empty($content)) {
+            throw InvalidArgumentException::build('Empty content are not allowed');
+        }
+
+        if (null === $sender || $message->getSender() !== $sender) {
+            throw PermissionDeniedException::build();
+        }
+
+        $editRecord = new MessageEditRecord($sender, $message, $message->getContent(), $content);
+        $message->addEditRecord($editRecord);
+
+        $this->messageEditRecordRepository->save($editRecord);
+        $this->messageRepository->save($message, true);
 
         return $message;
     }
