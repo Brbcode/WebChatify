@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\DomainException\Exception;
+use App\DomainException\InvalidArgumentException;
 use App\DomainException\PermissionDeniedException;
 use App\Entity\ChatRoom;
 use App\Entity\Message;
@@ -13,6 +14,7 @@ use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 
@@ -21,6 +23,7 @@ class MessageService
     private UserRepository $userRepository;
     private ChatRoomRepository $chatRoomRepository;
     private MessageRepository $messageRepository;
+    private Security $security;
 
     /**
      * @param UserRepository $userRepository
@@ -29,11 +32,13 @@ class MessageService
     public function __construct(
         UserRepository $userRepository,
         ChatRoomRepository $chatRoomRepository,
-        MessageRepository $messageRepository
+        MessageRepository $messageRepository,
+        Security $security
     ) {
         $this->userRepository = $userRepository;
         $this->chatRoomRepository = $chatRoomRepository;
         $this->messageRepository = $messageRepository;
+        $this->security = $security;
     }
 
     public function registerMessage(
@@ -86,13 +91,17 @@ class MessageService
         return $chatroom->getMessages();
     }
 
-    public function getMessage(User|Ulid|string $user, Message|Uuid|string $message): Message
+    public function getMessage(Message|Uuid|string|null $message): Message
     {
-        $user = $this->userRepository->getUser($user);
+        $sender = $this->security->getUser();
         $message = $this->messageRepository->getMessage($message);
 
-        if (null === $user || !$message->getChatroom()->getParticipants()->exists(
-            static fn($k, Participant $p)=>$p->getUser()===$user
+        if (null === $message) {
+            throw InvalidArgumentException::build('Message not found');
+        }
+
+        if (null === $sender || !$message->getChatroom()->getParticipants()->exists(
+            static fn($k, Participant $p)=>$p->getUser()===$sender
         )) {
             throw PermissionDeniedException::build();
         }

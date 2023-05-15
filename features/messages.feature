@@ -108,3 +108,56 @@ Feature:
     Then the response status code should be 400
     Then the JSON node "code" should be equal to 400
     Then the JSON node "message" should be equal to "Chatroom not found"
+
+  Scenario: Owner get specific message
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "GET" request to "/api/message/e4eefeba-9e27-460b-9cfd-b3954b618b65"
+    Then the response status code should be 200
+    And the JSON node "id" should be equal to "e4eefeba-9e27-460b-9cfd-b3954b618b65"
+    And the JSON node "sender" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
+    And the JSON node "createdAt" should exist
+    And the JSON node "editAt" should not exist
+    And the JSON node "content" should be equal to "Hello World!"
+
+  Scenario: Participant get specific message
+    Given I am logged with "testParcitipant@domain.com" and "password"
+    When user send a "GET" request to "/api/message/e4eefeba-9e27-460b-9cfd-b3954b618b65"
+    Then the response status code should be 200
+    And the JSON node "id" should be equal to "e4eefeba-9e27-460b-9cfd-b3954b618b65"
+    And the JSON node "sender" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
+    And the JSON node "createdAt" should exist
+    And the JSON node "editAt" should not exist
+    And the JSON node "content" should be equal to "Hello World!"
+
+  Scenario: User get specific message
+    Given I am logged with "example@domain.com" and "plainPassword"
+    When user send a "GET" request to "/api/message/e4eefeba-9e27-460b-9cfd-b3954b618b65"
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: Try get specific message without login
+    When I send a "GET" request to "/api/message/e4eefeba-9e27-460b-9cfd-b3954b618b65"
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: Owner get specific edited message
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "GET" request to "/api/message/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    Then the response status code should be 200
+    And the JSON node "id" should be equal to "74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    And the JSON node "sender" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
+    And the JSON node "createdAt" should exist
+    And the JSON node "editAt" should exist
+    And the JSON node "content" should be equal to "Edited Message!"
+
+  Scenario: Owner get specific message
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "GET" request to "/api/message/invalid-id"
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Message not found"

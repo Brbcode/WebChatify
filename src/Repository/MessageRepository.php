@@ -40,8 +40,12 @@ class MessageRepository extends ServiceEntityRepository
         }
     }
 
-    public function getMessage(Message|Uuid|string $message): Message|null
+    public function getMessage(Message|Uuid|string|null $message): Message|null
     {
+        if (null === $message) {
+            return null;
+        }
+
         if ($message instanceof Message) {
             return $this->findOneBy(['id' => $message->getId()->jsonSerialize()]);
         }
