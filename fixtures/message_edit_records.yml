@@ -1,0 +1,8 @@
+App\Entity\MessageEditRecord:
+  example_edit_record:
+    __construct:
+      editor: '@chat_owner_user'
+      message: '@example_edited_msg'
+      originalContent: 'Hello World!'
+      editedContent: 'Edited Message!'
+      editAt: <identity(new \DateTimeImmutable('2023-05-14'))>

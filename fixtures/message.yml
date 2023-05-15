@@ -5,3 +5,12 @@ App\Entity\Message:
       chatroom: '@test_fill_chat'
       content: 'Hello World!'
       id: 'e4eefeba-9e27-460b-9cfd-b3954b618b65'
+
+  example_edited_msg:
+    __construct:
+      sender: '@chat_owner_user'
+      chatroom: '@test_fill_chat'
+      content: 'Edited Message!'
+      createdAt: <identity(new \DateTimeImmutable('2023-05-13'))>
+      editAt:    <identity(new \DateTime('2023-05-14'))>
+      id: '74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed'

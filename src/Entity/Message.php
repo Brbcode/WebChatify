@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MessageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -34,6 +36,9 @@ class Message
     #[ORM\Column(type: Types::TEXT)]
     private string $content;
 
+    #[ORM\OneToMany(mappedBy: 'message', targetEntity: MessageEditRecord::class, orphanRemoval: true)]
+    private Collection $editRecords;
+
     /**
      * @param User $sender
      * @param ChatRoom $chatroom
@@ -47,12 +52,14 @@ class Message
         ChatRoom $chatroom,
         string $content,
         \DateTimeInterface|null $createdAt = null,
+        \DateTimeInterface|null $editAt = null,
         Uuid|string|null $id = null,
         bool $isVisible = true
     ) {
         $this->sender = $sender;
         $this->chatroom = $chatroom;
         $this->createdAt = $createdAt ?? new \DateTimeImmutable();
+        $this->editAt = $editAt;
         $this->isVisible = $isVisible;
         $this->content = $content;
 
@@ -61,6 +68,8 @@ class Message
         } else {
             $this->id = $id ?? Uuid::v4();
         }
+
+        $this->editRecords = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -127,5 +136,23 @@ class Message
     public function isEdited(): bool
     {
         return null !== $this->editAt;
+    }
+
+    /**
+     * @return Collection<int, MessageEditRecord>
+     */
+    public function getEditRecords(): Collection
+    {
+        return $this->editRecords;
+    }
+
+    public function addEditRecord(MessageEditRecord $editRecord): self
+    {
+        if (!$this->editRecords->contains($editRecord)) {
+            $this->editRecords->add($editRecord);
+            $editRecord->setMessage($this);
+        }
+
+        return $this;
     }
 }
