@@ -162,6 +162,52 @@ Feature:
     And the JSON node "code" should be equal to 400
     And the JSON node "message" should be equal to "Message not found"
 
+  Scenario: Admin get all records from message
+    Given I am logged with "testAdmin@domain.com" and "password"
+    When user send a "GET" request to "/api/message/records/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    Then the response status code should be 200
+    And the JSON node "root" should have 1 element
+    And the JSON node "root[0].editAt" should exist
+    And the JSON node "root[0].editor.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "root[0].editor.displayName" should be equal to "Chat Owner User"
+    And the JSON node "root[0].editor.email" should not exist
+    And the JSON node "root[0].from" should be equal to "Hello World!"
+    And the JSON node "root[0].to" should be equal to "Edited Message!"
+
+  Scenario: Owner get all records from own message
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "GET" request to "/api/message/records/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: Participant get all records from message
+    Given I am logged with "testParcitipant@domain.com" and "password"
+    When user send a "GET" request to "/api/message/records/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: User get all records from message
+    Given I am logged with "example@domain.com" and "plainPassword"
+    When user send a "GET" request to "/api/message/records/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: Try get all records from message without be logged
+    When I send a "GET" request to "/api/message/records/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
+    Then the response status code should be 401
+    And the JSON node "code" should be equal to 401
+    And the JSON node "message" should be equal to "Permission denied"
+
+  Scenario: Admin get all records from message
+    Given I am logged with "testAdmin@domain.com" and "password"
+    When user send a "GET" request to "/api/message/records/invalid-id"
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Message not found"
+
   Scenario: Owner edit own specific message
     Given I am logged with "chatOwner@domain.com" and "password"
     When user send a "PATCH" request to "/api/message/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed" with json body:

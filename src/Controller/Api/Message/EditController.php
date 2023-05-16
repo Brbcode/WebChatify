@@ -19,12 +19,15 @@ use Symfony\Component\Security\Core\Security;
 
 class EditController extends AbstractController
 {
+    public const PRIORITY = 100;
+
     #[Route(
         '/message/{messageId}',
         name: 'api_message_edit',
         requirements: ['messageId' => '.*'],
         defaults: ['messageId' => ''],
-        methods: ['PATCH']
+        methods: ['PATCH'],
+        priority: self::PRIORITY
     )]
     public function index(
         MessageService $service,
