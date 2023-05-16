@@ -139,4 +139,24 @@ class MessageService
 
         return $message;
     }
+
+    /**
+     * @return Collection<int, MessageEditRecord>
+     */
+    public function getMessageRecords(Message|Uuid|string|null $message): Collection
+    {
+        $sender = $this->security->getUser();
+
+        $message = $this->messageRepository->getMessage($message);
+
+        if (null === $message) {
+            throw InvalidArgumentException::build('Message not found');
+        }
+
+        if (null === $sender || !in_array('ROLE_ADMIN', $sender->getRoles())) {
+            throw PermissionDeniedException::build();
+        }
+
+        return $message->getEditRecords();
+    }
 }
