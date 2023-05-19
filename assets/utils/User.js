@@ -33,6 +33,12 @@ const User = (() => {
 
       return instance;
     },
+    logout: () => {
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('token');
+      instance = null;
+      window.dispatchEvent(new CustomEvent('user-logout'));
+    },
   };
 })();
 
