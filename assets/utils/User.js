@@ -33,6 +33,7 @@ const User = (() => {
 
       return instance;
     },
+    getToken: () => sessionStorage.getItem('token'),
     logout: () => {
       sessionStorage.removeItem('user');
       sessionStorage.removeItem('token');
