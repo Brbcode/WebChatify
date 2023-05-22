@@ -46,6 +46,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onAuthFailureResponse }
 
+    app.event.jwt_expired:
+            class: App\EventListener\JWTEventListener
+            tags:
+                - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onJWTExpired }
+
     # Fixtures processors
     App\Fixtures\Processors\UserProcessor:
       class: App\Fixtures\Processors\UserProcessor

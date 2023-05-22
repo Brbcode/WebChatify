@@ -7,6 +7,7 @@ use App\DTO\User\UserDTO;
 use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
+use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTExpiredEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTNotFoundEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,6 +59,17 @@ class JWTEventListener
             "code" => $code
         ], $code);
 
+        $event->setResponse($response);
+    }
+
+    public function onJWTExpired(JWTExpiredEvent $event): void
+    {
+        $message = 'Session has expired';
+        $code = Response::HTTP_UNAUTHORIZED;
+        $response = new JsonResponse([
+            'message' => $message,
+            'code' => $code,
+        ], $code);
         $event->setResponse($response);
     }
 }
