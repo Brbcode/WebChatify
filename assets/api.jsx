@@ -28,6 +28,10 @@ Api.interceptors.response.use(
           message: error.response.data.message,
         },
       }));
+
+      if (error.response.data.message === 'Session has expired') {
+        User.logout();
+      }
     } else if (error.request) {
       window.dispatchEvent(new CustomEvent('notification', {
         detail: {
