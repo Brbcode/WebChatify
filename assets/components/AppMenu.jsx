@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { ListItemIcon, Menu, MenuItem } from '@mui/material';
 import {
+  ChatOutlined,
   DarkModeOutlined, HelpOutline, LogoutOutlined, SettingsOutlined,
 } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import ThemeSwitch from './ThemeSwitch';
 import User from '../utils/User';
 import About from './About';
+import CreateChatroom from './Chatroom/CreateChatroom';
 
 function AppMenu({ anchorEl, onClose }) {
   const [isAboutModalOpen, setAboutModalOpen] = useState(false);
+  const [isCreateChatModalOpen, setCreateChatModalOpen] = useState(false);
 
   return (
     <>
@@ -23,6 +26,14 @@ function AppMenu({ anchorEl, onClose }) {
           },
         }}
       >
+        <MenuItem onClick={() => {
+          onClose();
+          setCreateChatModalOpen(true);
+        }}
+        >
+          <ListItemIcon><ChatOutlined /></ListItemIcon>
+          New Chat
+        </MenuItem>
         <MenuItem>
           <ListItemIcon><DarkModeOutlined /></ListItemIcon>
           Night Mode
@@ -38,6 +49,15 @@ function AppMenu({ anchorEl, onClose }) {
         </MenuItem>
       </Menu>
       {isAboutModalOpen && <About onClose={() => setAboutModalOpen(false)} />}
+      {isCreateChatModalOpen
+          && (
+          <CreateChatroom
+            onCreate={(chat) => {
+              window.dispatchEvent(new CustomEvent('new-chatroom', { detail: chat }));
+            }}
+            onClose={() => setCreateChatModalOpen(false)}
+          />
+          )}
     </>
   );
 }
