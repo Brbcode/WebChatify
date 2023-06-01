@@ -94,8 +94,10 @@ function ChatBrowser() {
     <Box
       sx={{
         display: 'flex',
+        flex: '0 0 auto',
         flexDirection: 'column',
         height: '100vh',
+        width: '100vw',
         [baseTheme.breakpoints.up('sm')]: {
           maxWidth: '424px',
           borderRight: 1,

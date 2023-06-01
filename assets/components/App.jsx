@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { CssBaseline } from '@mui/material';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, RouterProvider } from 'react-router-dom';
 import AppLoad from '../routes/appload';
 import AlertPortal from './AlertPortal';
 import User from '../utils/User';
 import SignGroup from './SignGroup';
 import ChatBrowser from './ChatBrowser';
 import { ThemeContextProvider } from './ThemeContextProvider';
+import routes from '../routes';
+import AppBody from './AppBody';
 
 function App() {
   const [user, setUser] = useState(User.get());
@@ -21,6 +23,10 @@ function App() {
 
   useEffect(() => {
     window.addEventListener('user-logout', onLogout);
+
+    return () => {
+      window.removeEventListener('user-logout', onLogout);
+    };
   }, []);
 
   return (
@@ -29,13 +35,11 @@ function App() {
         <CssBaseline />
         <React.Suspense fallback={<AppLoad />}>
           <AlertPortal />
-          <BrowserRouter>
-            {
+          {
               user == null
                 ? <SignGroup signInCallback={onSignIn} />
-                : <ChatBrowser />
-            }
-          </BrowserRouter>
+                : <RouterProvider router={routes} />
+          }
         </React.Suspense>
       </ThemeContextProvider>
     </React.StrictMode>

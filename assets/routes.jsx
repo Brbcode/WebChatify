@@ -1,13 +1,18 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import AppBody from './components/AppBody';
+import Chatroom from './components/Chatroom/Chatroom';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <h1>WWW</h1>,
+    element: <AppBody />,
     errorElement: <p>error</p>,
     children: [
-
+      {
+        path: 'c/:chatId',
+        element: <Chatroom />,
+      },
     ],
   },
   {

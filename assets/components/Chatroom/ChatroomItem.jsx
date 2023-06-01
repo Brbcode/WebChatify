@@ -24,9 +24,13 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 function ChatroomItem({ id, title, participantCount }) {
+  const handleOpenChat = () => {
+    window.dispatchEvent(new CustomEvent('show-chatroom', { detail: { title } }));
+  };
+
   return (
     <ListItem sx={{ paddingRight: 1 }}>
-      <StyledLink to={`/c/${id}`}>
+      <StyledLink to={`/c/${id}`} onClick={handleOpenChat} state={{ title }}>
         <StyledPaper>
           <ListItemText primary={title} />
           <Chip icon={<People sx={{ fontSize: 16 }} />} label={participantCount} sx={{ ml: 'auto' }} />
