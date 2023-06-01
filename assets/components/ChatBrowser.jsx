@@ -7,7 +7,7 @@ import {
   MenuRounded, SearchRounded,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-import { baseTheme } from './ThemeContextProvider';
+import { baseTheme, getDefaultScrollStyle } from './ThemeContextProvider';
 import AppMenu from './AppMenu';
 import Api from '../api';
 import ChatroomItem from './Chatroom/ChatroomItem';
@@ -18,19 +18,7 @@ const ScrollList = styled(List)(({ theme }) => ({
   flexDirection: 'column',
   flexGrow: 1,
   overflowY: 'auto',
-  marginRight: 5,
-  scrollbarWidth: 'thin',
-  '&::-webkit-scrollbar': {
-    width: 8,
-  },
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.16)' : '#0080ff40',
-    borderRadius: 10,
-  },
-  '&::-webkit-scrollbar-track': {
-    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.08)',
-    borderRadius: 10,
-  },
+  ...getDefaultScrollStyle(theme.palette.mode),
 }));
 
 function ChatBrowser() {

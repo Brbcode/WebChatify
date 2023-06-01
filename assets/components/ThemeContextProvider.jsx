@@ -56,4 +56,22 @@ function ThemeContextProvider({ children }) {
   );
 }
 
-export { ThemeContext, ThemeContextProvider, baseTheme };
+const getDefaultScrollStyle = (mode) => ({
+  marginRight: 5,
+  scrollbarWidth: 'thin',
+  '&::-webkit-scrollbar': {
+    width: 8,
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.16)' : '#0080ff40',
+    borderRadius: 10,
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.08)',
+    borderRadius: 10,
+  },
+});
+
+export {
+  ThemeContext, ThemeContextProvider, baseTheme, getDefaultScrollStyle,
+};
