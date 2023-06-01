@@ -2,6 +2,7 @@
 
 namespace App\DTO\Message;
 
+use App\DTO\User\UserMinDTO;
 use App\Entity\Message;
 
 class MessageDTO
@@ -14,7 +15,7 @@ class MessageDTO
         if ($message->isEdited()) {
             $result['editAt'] = $message->getEditAt();
         }
-        $result['sender'] = $message->getSender()->getId()->jsonSerialize();
+        $result['sender'] = UserMinDTO::build($message->getSender());
         $result['chatroom'] = $message->getChatroom()->getId()->jsonSerialize();
         $result['content'] = $message->getContent();
 

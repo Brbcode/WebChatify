@@ -10,7 +10,9 @@ Feature:
     And the JSON node 'root' should have 2 element
     And the JSON node 'root[1].id' should be equal to "e4eefeba-9e27-460b-9cfd-b3954b618b65"
     And the JSON node 'root[1].createdAt' should exist
-    And the JSON node 'root[1].sender' should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node 'root[1].sender.id' should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node 'root[1].sender.displayName' should be equal to "Chat Owner User"
+    And the JSON node 'root[1].sender.email' should not exist
     And the JSON node 'root[1].content' should be equal to "Hello World!"
 
   Scenario: Participant get all messages from chatroom
@@ -20,7 +22,9 @@ Feature:
     And the JSON node 'root' should have 2 element
     And the JSON node 'root[1].id' should be equal to "e4eefeba-9e27-460b-9cfd-b3954b618b65"
     And the JSON node 'root[1].createdAt' should exist
-    And the JSON node 'root[1].sender' should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node 'root[1].sender.id' should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node 'root[1].sender.displayName' should be equal to "Chat Owner User"
+    And the JSON node 'root[1].sender.email' should not exist
     And the JSON node 'root[1].content' should be equal to "Hello World!"
 
   Scenario: User try get all messages from not joined chatroom
@@ -49,7 +53,9 @@ Feature:
       | chatroom | d6af44ed-1a6d-4c45-b8be-b880cee13b10 |
       | content  | Example content                      |
     Then the response status code should be 200
-    Then the JSON node "sender" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    Then the JSON node "sender.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "sender.displayName" should be equal to "Chat Owner User"
+    And the JSON node "sender.email" should not exist
     Then the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
     Then the JSON node "createdAt" should exist
     Then the JSON node "editAt" should not exist
@@ -61,7 +67,9 @@ Feature:
       | chatroom | d6af44ed-1a6d-4c45-b8be-b880cee13b10 |
       | content  | Example content                      |
     Then the response status code should be 200
-    Then the JSON node "sender" should be equal to "01GZBRB9CBKTQ33T6A15JGRPDR"
+    Then the JSON node "sender.id" should be equal to "01GZBRB9CBKTQ33T6A15JGRPDR"
+    And the JSON node "sender.displayName" should be equal to "Participant User"
+    And the JSON node "sender.email" should not exist
     Then the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
     Then the JSON node "createdAt" should exist
     Then the JSON node "editAt" should not exist
@@ -114,7 +122,9 @@ Feature:
     When user send a "GET" request to "/api/message/e4eefeba-9e27-460b-9cfd-b3954b618b65"
     Then the response status code should be 200
     And the JSON node "id" should be equal to "e4eefeba-9e27-460b-9cfd-b3954b618b65"
-    And the JSON node "sender" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "sender.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "sender.displayName" should be equal to "Chat Owner User"
+    And the JSON node "sender.email" should not exist
     And the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
     And the JSON node "createdAt" should exist
     And the JSON node "editAt" should not exist
@@ -125,7 +135,9 @@ Feature:
     When user send a "GET" request to "/api/message/e4eefeba-9e27-460b-9cfd-b3954b618b65"
     Then the response status code should be 200
     And the JSON node "id" should be equal to "e4eefeba-9e27-460b-9cfd-b3954b618b65"
-    And the JSON node "sender" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "sender.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "sender.displayName" should be equal to "Chat Owner User"
+    And the JSON node "sender.email" should not exist
     And the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
     And the JSON node "createdAt" should exist
     And the JSON node "editAt" should not exist
@@ -149,7 +161,9 @@ Feature:
     When user send a "GET" request to "/api/message/74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
     Then the response status code should be 200
     And the JSON node "id" should be equal to "74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
-    And the JSON node "sender" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "sender.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node "sender.displayName" should be equal to "Chat Owner User"
+    And the JSON node "sender.email" should not exist
     And the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
     And the JSON node "createdAt" should exist
     And the JSON node "editAt" should exist
@@ -216,7 +230,7 @@ Feature:
     And the JSON node 'id' should be equal to "74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed"
     And the JSON node 'createdAt' should exist
     And the JSON node 'editAt' should exist
-    And the JSON node 'sender' should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    And the JSON node 'sender.id' should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
     And the JSON node 'content' should be equal to "Hello World!!"
 
   Scenario: Participants edit specific message
