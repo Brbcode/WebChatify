@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Autocomplete, Box, Button, CircularProgress, Container,
   IconButton, InputAdornment, List, Stack, TextField, Typography,
@@ -25,6 +25,9 @@ function ChatBrowser() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [chats, setChats] = useState(null);
   const [isCreateChatroomModalOpen, setCreateChatroomModalOpen] = useState(false);
+  const [searchFilter, setFilter] = useState([]);
+  const inputRef = useRef();
+  let searchDebounce = null;
 
   const reloadChats = () => {
     Api.get('chat')
@@ -34,6 +37,23 @@ function ChatBrowser() {
       .catch(() => { /* ignore */ });
   };
 
+  const applyFilter = () => {
+    const { value } = inputRef.current;
+    const regexGroups = [...value.matchAll(/([A-Z][^A-Z]*)/g)].map((match) => match[0]);
+
+    setFilter(regexGroups);
+  };
+
+  const handleInputChange = () => {
+    const delay = 300;
+
+    if (searchDebounce) {
+      clearTimeout(searchDebounce);
+    }
+
+    searchDebounce = setTimeout(applyFilter, delay);
+  };
+
   useEffect(() => {
     window.addEventListener('new-chatroom', reloadChats);
 
@@ -41,6 +61,10 @@ function ChatBrowser() {
 
     return () => {
       window.removeEventListener('new-chatroom', reloadChats);
+
+      if (searchDebounce) {
+        clearTimeout(searchDebounce);
+      }
     };
   }, []);
 
@@ -68,14 +92,23 @@ function ChatBrowser() {
       );
     }
 
-    return chats.map(({ id, title, participantsCount }) => (
-      <ChatroomItem
-        key={id}
-        id={id}
-        title={title}
-        participantCount={participantsCount}
-      />
-    ));
+    return chats
+      .filter(({ title }) => {
+        if (searchFilter.length === 0) {
+          return true;
+        }
+
+        const regex = new RegExp(`.*${searchFilter.join('.*')}.*`, 'g');
+        return regex.test(title);
+      })
+      .map(({ id, title, participantsCount }) => (
+        <ChatroomItem
+          key={id}
+          id={id}
+          title={title}
+          participantCount={participantsCount}
+        />
+      ));
   };
 
   return (
@@ -110,6 +143,8 @@ function ChatBrowser() {
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
                 {...params}
                 placeholder="Search"
+                onChange={handleInputChange}
+                inputRef={inputRef}
                 InputProps={{
                   ...params.InputProps,
                   type: 'search',
@@ -130,7 +165,14 @@ function ChatBrowser() {
         }}
       >
         {renderChatrooms()}
-        {isCreateChatroomModalOpen && <CreateChatroom onClose={() => setCreateChatroomModalOpen(false)} />}
+        {isCreateChatroomModalOpen && (
+        <CreateChatroom
+          onClose={() => setCreateChatroomModalOpen(false)}
+          onCreate={(chat) => {
+            window.dispatchEvent(new CustomEvent('new-chatroom', { detail: chat }));
+          }}
+        />
+        )}
       </ScrollList>
     </Box>
   );

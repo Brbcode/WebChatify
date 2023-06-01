@@ -110,7 +110,7 @@ function CreateChatroom({ onCreate, onClose }) {
   return (
     <Dialog open fullWidth maxWidth="sm" onClose={onClose}>
       <DialogTitle>New Chatroom</DialogTitle>
-      <DialogContent sx={{ pb: 0 }}>
+      <DialogContent sx={{ pb: 0.5 }}>
         <Box
           component="form"
           sx={{
