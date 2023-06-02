@@ -36,9 +36,10 @@ class GetController extends AbstractController
         $allMessages = $service->getAllMessages($sender, $chatroomId);
 
         return $this->json(
-            $allMessages->map(
-                static fn(Message $message) => MessageDTO::build($message)
-            )->toArray()
+            array_map(
+                static fn(Message $message) => MessageDTO::build($message),
+                $allMessages,
+            )
         );
     }
 }

@@ -92,7 +92,7 @@ class Message
         return $this->createdAt;
     }
 
-    public function isIsVisible(): bool
+    public function isVisible(): bool
     {
         return $this->isVisible;
     }

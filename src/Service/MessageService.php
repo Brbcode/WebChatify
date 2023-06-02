@@ -15,6 +15,7 @@ use App\Repository\MessageEditRecordRepository;
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Uid\Ulid;
@@ -75,10 +76,13 @@ class MessageService
         return $message;
     }
 
+    /**
+     * @return Message[]
+     */
     public function getAllMessages(
         User|Ulid|string|null     $user,
         ChatRoom|Uuid|string|null $chatroom,
-    ): Collection {
+    ): array {
         $user = $this->userRepository->getUser($user);
         $chatroom = $this->chatRoomRepository->getChatRoom($chatroom);
 
@@ -93,7 +97,17 @@ class MessageService
             throw PermissionDeniedException::build();
         }
 
-        return $chatroom->getMessages();
+        $messagesArray = $chatroom->getMessages()
+            ->filter(static fn(Message $m)=>$m->isVisible())
+            ->toArray()
+        ;
+
+        usort(
+            $messagesArray,
+            static fn(Message $a, Message $b) => $a->getCreatedAt() > $b->getCreatedAt() ? 1 : -1
+        );
+
+        return $messagesArray;
     }
 
     public function getMessage(Message|Uuid|string|null $message): Message

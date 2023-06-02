@@ -6,6 +6,7 @@ Feature:
   Scenario: Owner get all messages from chatroom
     Given I am logged with "chatOwner@domain.com" and "password"
     When user send a "GET" request to "/api/messages/chat/d6af44ed-1a6d-4c45-b8be-b880cee13b10"
+    Then print last JSON response
     Then the response status code should be 200
     And the JSON node 'root' should have 2 element
     And the JSON node 'root[1].id' should be equal to "e4eefeba-9e27-460b-9cfd-b3954b618b65"
