@@ -4,6 +4,9 @@ namespace App\Controller\Api\Chat;
 
 use App\DomainException\PermissionDeniedException;
 use App\DTO\ChatRoom\ChatRoomListDTO;
+use App\DTO\ChatRoom\ChatRoomMinDTO;
+use App\Entity\ChatRoom;
+use App\Service\ChatRoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,12 +20,16 @@ class GetController extends AbstractController
         methods: ['GET']
     )]
     public function index(
-        Security $security
+        Security $security,
+        ChatRoomService $service
     ): JsonResponse {
-        if (null === ($user = $security->getUser())) {
-            throw PermissionDeniedException::build();
-        }
+        $chatrooms = $service->getAllChatrooms($security->getUser());
 
-        return $this->json(ChatRoomListDTO::buildFromUser($user));
+        return $this->json(
+            array_map(
+                static fn(ChatRoom $c)=>ChatRoomMinDTO::build($c),
+                $chatrooms
+            )
+        );
     }
 }

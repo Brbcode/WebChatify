@@ -44,6 +44,34 @@ class ChatRoomService
         return $chatRoom;
     }
 
+    /**
+     * @return ChatRoom[]
+     */
+    public function getAllChatrooms(User|Ulid|string|null $user): array
+    {
+        $sender = $this->security->getUser();
+        $user = $this->userRepository->getUser($user);
+        $participants = $this->participantRepository->findBy(['user' => $user]);
+
+        if ($sender === null) {
+            throw PermissionDeniedException::build();
+        }
+
+        $ownerChatrooms = $user->getChatRooms()->toArray();
+        $participantsChatrooms = array_map(
+            static fn(Participant $p)=>$p->getChatroom(),
+            $participants
+        );
+
+        $allChatrooms = array_merge($ownerChatrooms, $participantsChatrooms);
+        usort(
+            $allChatrooms,
+            static fn(ChatRoom $c1, ChatRoom $c2) => strcmp($c1->getTitle(), $c2->getTitle())
+        );
+
+        return $allChatrooms;
+    }
+
     public function joinChatRoom(
         User|Ulid|string|null $user,
         ChatRoom|Uuid|string|null $chatroom
