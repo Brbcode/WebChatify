@@ -7,14 +7,13 @@ Feature:
     Given I am logged with "chatOwner@domain.com" and "password"
     When user send a "GET" request to "/api/chat"
     Then the response status code should be 200
-    Then the JSON node "owner.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
-    Then the JSON node "owner.displayName" should be equal to "Chat Owner User"
-    Then the JSON node "chatrooms" should have 3 elements
-    Then the JSON node "chatrooms[0].id" should exist
-    Then the JSON node "chatrooms[0].title" should exist
-    Then the JSON node "chatrooms[0].createdAt" should exist
-    Then the JSON node "chatrooms[0].participants" should not exist
-    Then the JSON node "chatrooms[0].participantsCount" should exist
+    Then the JSON node "root" should have 3 elements
+    Then the JSON node "root[0].id" should exist
+    Then the JSON node "root[0].owner.id" should be equal to "01GZC0AK7MHST8YEDB185ZWQ0E"
+    Then the JSON node "root[0].owner.displayName" should be equal to "Chat Owner User"
+    Then the JSON node "root[0].title" should exist
+    Then the JSON node "root[0].createdAt" should exist
+    Then the JSON node "root[0].participants" should exist
 
   Scenario: Get users ChatRooms without be logged
     When I send a "POST" request to "/api/chat"

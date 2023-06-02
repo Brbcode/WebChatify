@@ -32,7 +32,7 @@ function ChatBrowser() {
   const reloadChats = () => {
     Api.get('chat')
       .then(({ data }) => {
-        setChats(data.chatrooms);
+        setChats(data);
       })
       .catch(() => { /* ignore */ });
   };
@@ -101,12 +101,12 @@ function ChatBrowser() {
         const regex = new RegExp(`.*${searchFilter.join('.*')}.*`, 'g');
         return regex.test(title);
       })
-      .map(({ id, title, participantsCount }) => (
+      .map(({ id, title, participants }) => (
         <ChatroomItem
           key={id}
           id={id}
           title={title}
-          participantCount={participantsCount}
+          participantCount={participants.length}
         />
       ));
   };
