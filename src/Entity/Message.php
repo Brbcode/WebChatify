@@ -24,7 +24,7 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private ?ChatRoom $chatroom = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: false)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]

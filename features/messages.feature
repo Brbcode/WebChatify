@@ -58,7 +58,7 @@ Feature:
     And the JSON node "sender.displayName" should be equal to "Chat Owner User"
     And the JSON node "sender.email" should not exist
     Then the JSON node "chatroom" should be equal to "d6af44ed-1a6d-4c45-b8be-b880cee13b10"
-    Then the JSON node "createdAt" should exist
+    Then the JSON node "createdAt" should be the current date and time
     Then the JSON node "editAt" should not exist
     Then the JSON node "content" should be equal to "Example content"
 
@@ -271,3 +271,5 @@ Feature:
     Then the response status code should be 400
     And the JSON node "code" should be equal to 400
     And the JSON node "message" should be equal to "Empty content are not allowed"
+
+
