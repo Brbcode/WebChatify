@@ -167,6 +167,7 @@ function Chatroom() {
 
   useEffect(() => {
     scrollToEnd();
+    const eventSource = new EventSource('http://localhost:3000');
 
     Api.get(`messages/chat/${chatId}`)
       .then(({ data }) => {

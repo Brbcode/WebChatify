@@ -10,6 +10,7 @@ services:
       dockerfile: .docker/app/Dockerfile
     depends_on:
       - sqlserver
+      - mercure
     volumes:
       - ./:/var/www/html
 
@@ -39,7 +40,32 @@ services:
       - db:/var/lib/mysql
       - .docker/sqlserver/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+###> symfony/mercure-bundle ###
+  mercure:
+    container_name: mercure
+    image: dunglas/mercure
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      SERVER_NAME: ':3000'
+      MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+      # Set the URL of your Symfony project (without trailing slash!) as value of the cors_origins directive
+      MERCURE_EXTRA_DIRECTIVES: |
+        cors_origins http://localhost:8000
+    # Comment the following line to disable the development mode
+    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
+    volumes:
+      - mercure_data:/data
+      - mercure_config:/config
+###< symfony/mercure-bundle ###
+
 volumes:
 ###> doctrine/doctrine-bundle ###
   db:
 ###< doctrine/doctrine-bundle ###
+###> symfony/mercure-bundle ###
+  mercure_data:
+  mercure_config:
+###< symfony/mercure-bundle ###
