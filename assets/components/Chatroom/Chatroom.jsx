@@ -21,6 +21,8 @@ import { getDefaultScrollStyle } from '../ThemeContextProvider';
 import Message from '../Message/Message';
 import Api from '../../api';
 import TimeParser from '../../utils/TimeParser';
+import Mercure from '../../utils/Mercure';
+import User from '../../utils/User';
 
 const MultilineInputBase = styled(InputBase)(({ theme }) => ({
   '& textarea': {
@@ -159,23 +161,39 @@ function Chatroom() {
     }
 
     Api.post('message', { chatroom: chatId, content: inputValue })
-      .then(({ data }) => {
-        setMessages((v) => [...v, data]);
+      .then(() => {
         inputRef.current.value = '';
       }).catch(() => { /* Do nothing */ });
   };
 
+  const handleSubscriber = (event) => {
+    const data = JSON.parse(event.data);
+    setMessages(data.map((m) => ({
+      ...m,
+      createdAt: m.createdAt.date,
+      editAt: m.editAt && m.editAt.date,
+    })));
+
+    const sliceLast = data.slice(-1);
+    const lastMsg = sliceLast.lenght === 0 ? null : sliceLast[0];
+
+    if (lastMsg && lastMsg.sender.id === User.get().id) {
+      setTimeout(scrollToEnd, 200);
+    }
+  };
+
   useEffect(() => {
-    scrollToEnd();
-    const eventSource = new EventSource('http://localhost:3000');
+    const subscriber = Mercure.createSubscriber(`sse:chat:${chatId}`);
+    subscriber.onmessage = handleSubscriber;
 
     Api.get(`messages/chat/${chatId}`)
       .then(({ data }) => {
         setMessages(data);
+        scrollToEnd();
       })
       .catch(() => { setError(true); });
     return () => {
-
+      subscriber.close();
     };
   }, []);
 

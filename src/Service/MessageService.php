@@ -5,6 +5,7 @@ namespace App\Service;
 use App\DomainException\Exception;
 use App\DomainException\InvalidArgumentException;
 use App\DomainException\PermissionDeniedException;
+use App\DTO\Message\MessageDTO;
 use App\Entity\ChatRoom;
 use App\Entity\Message;
 use App\Entity\MessageEditRecord;
@@ -15,8 +16,9 @@ use App\Repository\MessageEditRecordRepository;
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ReadableCollection;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
@@ -28,6 +30,7 @@ class MessageService
     private MessageRepository $messageRepository;
     private Security $security;
     private MessageEditRecordRepository $messageEditRecordRepository;
+    private HubInterface $hub;
 
     /**
      * @param UserRepository $userRepository
@@ -38,13 +41,15 @@ class MessageService
         ChatRoomRepository          $chatRoomRepository,
         MessageRepository           $messageRepository,
         MessageEditRecordRepository $messageEditRecordRepository,
-        Security                    $security
+        Security                    $security,
+        HubInterface $hub,
     ) {
         $this->userRepository = $userRepository;
         $this->chatRoomRepository = $chatRoomRepository;
         $this->messageRepository = $messageRepository;
         $this->security = $security;
         $this->messageEditRecordRepository = $messageEditRecordRepository;
+        $this->hub = $hub;
     }
 
     public function registerMessage(
@@ -72,6 +77,17 @@ class MessageService
         $message = new Message($sender, $chatroom, $content);
 
         $this->messageRepository->save($message, true);
+
+        $messages = $this->getAllMessages($sender, $chatroom);
+        $messages = array_map(
+            static fn(Message $m)=>MessageDTO::build($m),
+            $messages
+        );
+
+        $this->hub->publish(new Update(
+            sprintf('sse:chat:%s', $chatroom->getId()->jsonSerialize()),
+            json_encode($messages)
+        ));
 
         return $message;
     }
