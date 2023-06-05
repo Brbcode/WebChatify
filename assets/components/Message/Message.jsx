@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import {
   alpha,
-  Avatar, Box, Chip, Typography,
+  Avatar, Box, Chip, ListItemIcon, ListItemText, Menu, MenuItem, Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
+import { Edit } from '@mui/icons-material';
 import TimeParser from '../../utils/TimeParser';
 import User from '../../utils/User';
 
@@ -42,8 +43,12 @@ const DateChip = styled(Chip)(({ theme }) => ({
   right: theme.spacing(0.5), // fix
 }));
 
-function Message({ data, showAvatar }) {
+function Message({
+  data, showAvatar, onEditStart, selected,
+}) {
   const isFromOwner = data.sender.id === User.get().id;
+  const ref = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const stringToColor = (string) => {
     let hash = 0;
@@ -93,20 +98,39 @@ function Message({ data, showAvatar }) {
     };
   };
 
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+
+    setMenuOpen(true);
+  };
+
+  const handleEdit = () => {
+    setMenuOpen(false);
+    onEditStart(data.id);
+  };
+
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'row',
-      maxWidth: '70%',
-      gap: 1,
-      mb: 0.5,
-      ml: isFromOwner && 'auto',
-    }}
+    <Box
+      ref={ref}
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        maxWidth: '70%',
+        gap: 1,
+        mb: 0.5,
+        ml: isFromOwner && 'auto',
+        opacity: selected && 0.5,
+      }}
     >
       {
-        showAvatar && isFromOwner === false && <Avatar {...getAvatarProps(data.sender.displayName)} />
+        showAvatar && isFromOwner === false
+          && <Avatar {...getAvatarProps(data.sender.displayName)} />
       }
-      <StyledContent {...getContentStyles()}>
+      <StyledContent
+        {...getContentStyles()}
+        onContextMenu={handleContextMenu}
+        onTouchStart={handleContextMenu}
+      >
         {
           showAvatar && (
           <DisplayName sx={{ color: stringToColor(data.sender.displayName) }}>
@@ -129,6 +153,23 @@ function Message({ data, showAvatar }) {
       {
           showAvatar && isFromOwner && <Avatar {...getAvatarProps(data.sender.displayName)} />
       }
+      <Menu
+        open={menuOpen}
+        anchorEl={ref.current}
+        onClose={() => setMenuOpen(false)}
+        PaperProps={{
+          style: {
+            minWidth: 150,
+          },
+        }}
+      >
+        <MenuItem>
+          <ListItemIcon>
+            <Edit />
+          </ListItemIcon>
+          <ListItemText onClick={handleEdit}>Edit</ListItemText>
+        </MenuItem>
+      </Menu>
     </Box>
   );
 }
@@ -146,10 +187,14 @@ Message.propTypes = {
     content: PropTypes.string.isRequired,
   }).isRequired,
   showAvatar: PropTypes.bool,
+  onEditStart: PropTypes.func,
+  selected: PropTypes.bool,
 };
 
 Message.defaultProps = {
   showAvatar: true,
+  onEditStart: () => {},
+  selected: false,
 };
 
 export default Message;

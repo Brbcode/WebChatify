@@ -51,6 +51,7 @@ function Chatroom() {
   const [messages, setMessages] = useState(false);
   const scrollBoxRef = useRef(null);
   const inputRef = useRef(null);
+  const [editMessage, setEditMessage] = useState(null);
 
   const handleBack = () => {
     window.dispatchEvent(new CustomEvent('show-chatroom-browser'));
@@ -68,6 +69,13 @@ function Chatroom() {
       current.scrollTop = current.scrollHeight;
       setScrolledToBottom(true);
     }
+  };
+
+  const handleEditMessageSelect = (id) => {
+    setEditMessage(id);
+    const input = inputRef.current;
+    input.focus();
+    input.value = messages.find((m) => m.id === id).content;
   };
 
   const needDateChip = (prevDate, currentDate) => {
@@ -132,12 +140,25 @@ function Chatroom() {
               }}
               size="small"
             />
-            <Message data={data} showAvatar />
+            <Message
+              data={data}
+              showAvatar
+              onEditStart={handleEditMessageSelect}
+              selected={data.id === editMessage}
+            />
           </Fragment>
         );
       }
 
-      return <Message key={data.id} data={data} showAvatar={showAvatar} />;
+      return (
+        <Message
+          key={data.id}
+          data={data}
+          showAvatar={showAvatar}
+          onEditStart={handleEditMessageSelect}
+          selected={data.id === editMessage}
+        />
+      );
     });
   };
 
@@ -160,10 +181,18 @@ function Chatroom() {
       return;
     }
 
-    Api.post('message', { chatroom: chatId, content: inputValue })
-      .then(() => {
-        inputRef.current.value = '';
-      }).catch(() => { /* Do nothing */ });
+    if (editMessage) {
+      Api.patch(`message/${editMessage}`, { content: inputValue })
+        .then(() => {
+          inputRef.current.value = '';
+          setEditMessage(null);
+        }).catch(() => { /* Do nothing */ });
+    } else {
+      Api.post('message', { chatroom: chatId, content: inputValue })
+        .then(() => {
+          inputRef.current.value = '';
+        }).catch(() => { /* Do nothing */ });
+    }
   };
 
   const handleSubscriber = (event) => {
@@ -246,6 +275,7 @@ function Chatroom() {
         {/* <Message /> */}
       </ScrollBox>
       <Divider />
+      { editMessage && <Typography variant="caption">Editing...</Typography> }
       <Box
         sx={{
           display: 'flex',
@@ -261,6 +291,12 @@ function Chatroom() {
           placeholder="Message"
           sx={{ flexGrow: 1 }}
           onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              inputRef.current.value = '';
+              setEditMessage(null);
+              return;
+            }
+
             if (e.ctrlKey && e.key === 'Enter') {
               sendMessage();
             }

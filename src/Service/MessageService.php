@@ -167,6 +167,18 @@ class MessageService
         $this->messageEditRecordRepository->save($editRecord);
         $this->messageRepository->save($message, true);
 
+        $chatroom = $message->getChatroom();
+        $messages = $this->getAllMessages($sender, $chatroom);
+        $messages = array_map(
+            static fn(Message $m)=>MessageDTO::build($m),
+            $messages
+        );
+
+        $this->hub->publish(new Update(
+            sprintf('sse:chat:%s', $chatroom->getId()->jsonSerialize()),
+            json_encode($messages)
+        ));
+
         return $message;
     }
 
