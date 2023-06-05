@@ -41,7 +41,7 @@ function CreateChatroom({ onCreate, onClose }) {
           setParticipants((prev) => {
             const updatedParticipants = [...prev];
             updatedParticipants[index] = { status: 'success', label: prev[index].label };
-            return [...prev];
+            return [...updatedParticipants];
           });
 
           return res;

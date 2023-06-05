@@ -13,9 +13,11 @@ import {
   TextareaAutosize,
   InputBase,
   CircularProgress,
-  Button, Chip,
+  Button, Chip, Menu, MenuItem, ListItemIcon,
 } from '@mui/material';
-import { ArrowBackOutlined, Send } from '@mui/icons-material';
+import {
+  ArrowBackOutlined, MoreVert, PersonAdd, Send,
+} from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { getDefaultScrollStyle } from '../ThemeContextProvider';
 import Message from '../Message/Message';
@@ -23,6 +25,7 @@ import Api from '../../api';
 import TimeParser from '../../utils/TimeParser';
 import Mercure from '../../utils/Mercure';
 import User from '../../utils/User';
+import InviteModal from './InviteModal';
 
 const MultilineInputBase = styled(InputBase)(({ theme }) => ({
   '& textarea': {
@@ -52,6 +55,9 @@ function Chatroom() {
   const scrollBoxRef = useRef(null);
   const inputRef = useRef(null);
   const [editMessage, setEditMessage] = useState(null);
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const isMenuOpen = Boolean(menuAnchor);
+  const [isInviteModalOpen, setInviteModal] = useState(false);
 
   const handleBack = () => {
     window.dispatchEvent(new CustomEvent('show-chatroom-browser'));
@@ -269,6 +275,9 @@ function Chatroom() {
             )
             : <Skeleton variant="text" width="70%" />
         }
+        <IconButton onClick={(e) => setMenuAnchor(e.target)} sx={{ ml: 'auto' }}>
+          <MoreVert />
+        </IconButton>
       </Container>
       <ScrollBox ref={scrollBoxRef} onScroll={handleScroll} {...getScrollBoxStyles()}>
         {renderScrollBox()}
@@ -307,6 +316,24 @@ function Chatroom() {
           <Send color="primary" />
         </IconButton>
       </Box>
+      <Menu open={isMenuOpen} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)}>
+        <MenuItem
+          onClick={() => {
+            setMenuAnchor(null);
+            setInviteModal(true);
+          }}
+        >
+          <ListItemIcon>
+            <PersonAdd />
+          </ListItemIcon>
+          Add new participant
+        </MenuItem>
+      </Menu>
+      <InviteModal
+        chatId={chatId}
+        onClose={() => setInviteModal(false)}
+        open={isInviteModalOpen}
+      />
     </Box>
   );
 }
