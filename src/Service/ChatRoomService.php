@@ -96,6 +96,10 @@ class ChatRoomService
 
         $participant = $this->participantRepository->findOneBy(['user' => $user, 'chatroom' => $chatroom]);
 
+        if ($chatroom->getOwner()===$user) {
+            throw Exception::build("Owner can't join to own chat", Response::HTTP_BAD_REQUEST);
+        }
+
         if ($participant !== null) {
             throw Exception::build("User is already joined to this chat", Response::HTTP_BAD_REQUEST);
         }

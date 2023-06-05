@@ -133,3 +133,11 @@ Feature:
     And the JSON node "code" should be equal to 401
     And the JSON node "message" should be equal to "Permission denied"
 
+  Scenario: Owner join to own ChatRoom
+    Given I am logged with "chatOwner@domain.com" and "password"
+    When user send a "POST" request to "/api/join/chat" with json body:
+      | user     | 01GZC0AK7MHST8YEDB185ZWQ0E           |
+      | chatroom | 35afea23-ec2a-4d26-977b-9240b6bdfdb9 |
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should be equal to "Owner can't join to own chat"
