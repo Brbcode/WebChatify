@@ -12,6 +12,8 @@ import AppMenu from './AppMenu';
 import Api from '../api';
 import ChatroomItem from './Chatroom/ChatroomItem';
 import CreateChatroom from './Chatroom/CreateChatroom';
+import User from '../utils/User';
+import Mercure from '../utils/Mercure';
 
 const ScrollList = styled(List)(({ theme }) => ({
   display: 'flex',
@@ -54,13 +56,24 @@ function ChatBrowser() {
     searchDebounce = setTimeout(applyFilter, delay);
   };
 
+  const handleSubscribe = ({ data }) => {
+    const parseData = JSON.parse(data);
+    setChats(parseData.map((c) => ({
+      ...c,
+      createdAt: c.createdAt.date,
+    })));
+  };
+
   useEffect(() => {
     window.addEventListener('new-chatroom', reloadChats);
+    const subscriber = Mercure.createSubscriber(`sse:chatrooms:${User.get().id}`);
+    subscriber.onmessage = handleSubscribe;
 
     reloadChats();
 
     return () => {
       window.removeEventListener('new-chatroom', reloadChats);
+      subscriber.close();
 
       if (searchDebounce) {
         clearTimeout(searchDebounce);

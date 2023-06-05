@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\DomainException\Exception;
 use App\DomainException\PermissionDeniedException;
+use App\DTO\ChatRoom\ChatRoomMinDTO;
 use App\Entity\ChatRoom;
 use App\Entity\Participant;
 use App\Entity\User;
@@ -11,6 +12,8 @@ use App\Repository\ChatRoomRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
@@ -21,17 +24,20 @@ class ChatRoomService
     private UserRepository $userRepository;
     private ParticipantRepository $participantRepository;
     private Security $security;
+    private HubInterface $hub;
 
     public function __construct(
         ChatRoomRepository $chatRoomRepository,
         ParticipantRepository $participantRepository,
         UserRepository $userRepository,
-        Security $security
+        Security $security,
+        HubInterface $hub
     ) {
         $this->chatRoomRepository = $chatRoomRepository;
         $this->userRepository = $userRepository;
         $this->participantRepository = $participantRepository;
         $this->security = $security;
+        $this->hub = $hub;
     }
 
     public function createChatRoom(User $owner, string $title): ChatRoom
@@ -99,6 +105,17 @@ class ChatRoomService
 
         $this->participantRepository->save($participant, true);
         $this->chatRoomRepository->save($chatroom, true);
+
+        $chatrooms = $this->getAllChatrooms($participant->getUser());
+        $chatrooms = array_map(
+            static fn(ChatRoom $c)=>ChatRoomMinDTO::build($c),
+            $chatrooms
+        );
+
+        $this->hub->publish(new Update(
+            sprintf('sse:chatrooms:%s', $participant->getUser()->getId()->jsonSerialize()),
+            json_encode($chatrooms)
+        ));
 
         return $chatroom;
     }
