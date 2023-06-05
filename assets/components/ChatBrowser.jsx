@@ -41,7 +41,7 @@ function ChatBrowser() {
 
   const applyFilter = () => {
     const { value } = inputRef.current;
-    const regexGroups = [...value.matchAll(/([A-Z][^A-Z]*)/g)].map((match) => match[0]);
+    const regexGroups = [...value.matchAll(/([A-Z]?[^A-Z]*)/g)].map((match) => match[0]);
 
     setFilter(regexGroups);
   };
