@@ -5,9 +5,10 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import { Edit } from '@mui/icons-material';
+import { Edit, Visibility } from '@mui/icons-material';
 import TimeParser from '../../utils/TimeParser';
 import User from '../../utils/User';
+import MessageHistory from './MessageHistory';
 
 const StyledContent = styled(Box)(({ theme }) => {
   const addStyle = theme.palette.mode === 'dark' ? ({})
@@ -48,6 +49,7 @@ function Message({
   const isFromOwner = data.sender.id === User.get().id;
   const ref = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showHistory, setHistoryVisibility] = useState(false);
 
   const stringToColor = (string) => {
     let hash = 0;
@@ -175,7 +177,31 @@ function Message({
           </ListItemIcon>
           <ListItemText onClick={handleEdit}>Edit</ListItemText>
         </MenuItem>
+        {
+          User.get().roles.includes('ROLE_ADMIN')
+            && (
+            <MenuItem disabled={!data.editAt} onClick={() => setHistoryVisibility(true)}>
+              <ListItemIcon>
+                <Visibility />
+              </ListItemIcon>
+              Show history
+            </MenuItem>
+            )
+        }
       </Menu>
+      {
+        isFromOwner
+          && (
+          <MessageHistory
+            id={data.id}
+            open={showHistory}
+            onClose={() => {
+              setHistoryVisibility(false);
+              setMenuOpen(false);
+            }}
+          />
+          )
+      }
     </Box>
   );
 }
