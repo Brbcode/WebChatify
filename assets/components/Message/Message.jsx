@@ -40,7 +40,6 @@ const DateChip = styled(Chip)(({ theme }) => ({
   fontSize: '8pt',
   position: 'absolute',
   bottom: theme.spacing(0.5),
-  right: theme.spacing(0.5), // fix
 }));
 
 function Message({
@@ -148,7 +147,14 @@ function Message({
               ),
             )
         }
-        <DateChip label={parseDate(data)} size="small" />
+        <DateChip
+          label={parseDate(data)}
+          size="small"
+          sx={{
+            right: isFromOwner && 4,
+            left: !isFromOwner && 4,
+          }}
+        />
       </StyledContent>
       {
           showAvatar && isFromOwner && <Avatar {...getAvatarProps(data.sender.displayName)} />
