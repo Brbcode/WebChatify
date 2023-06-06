@@ -40,8 +40,8 @@ init:
 	$(DOCKER_CMD) exec app "yarn run build"
 	@echo "###< Yarn Install ###"
 	@echo
-	@echo "###> Hooks Install ###"
-	$(DOCKER_CMD) exec app "cp .docker/hooks/pre-commit .git/hooks/pre-commit"
+#	@echo "###> Hooks Install ###"
+#	$(DOCKER_CMD) exec app "cp .docker/hooks/pre-commit .git/hooks/pre-commit"
 	@echo "###< Hooks Install ###"
 	@echo
 	@echo "###> Generate the SSL keys ###"
