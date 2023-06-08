@@ -46,26 +46,31 @@ function MessageHistory({ id, open, onClose }) {
     }));
   const renderTimeline = () => (
     <Timeline>
-      <TimelineItem>
-        <TimelineOppositeContent
-          sx={{
-            width: '90px',
-            paddingRight: '6px',
-            flex: 'unset',
-          }}
-        >
-          <Chip label="original" />
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineDot variant="outlined" />
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent>
-          <StyledMessage>
-            {records[0].from}
-          </StyledMessage>
-        </TimelineContent>
-      </TimelineItem>
+      {
+        records.length > 0
+          && (
+          <TimelineItem>
+            <TimelineOppositeContent
+              sx={{
+                width: '90px',
+                paddingRight: '6px',
+                flex: 'unset',
+              }}
+            >
+              <Chip label="original" />
+            </TimelineOppositeContent>
+            <TimelineSeparator>
+              <TimelineDot variant="outlined" />
+              <TimelineConnector />
+            </TimelineSeparator>
+            <TimelineContent>
+              <StyledMessage>
+                {records[0].from}
+              </StyledMessage>
+            </TimelineContent>
+          </TimelineItem>
+          )
+      }
       {
         records.map(({ editAt, to }, index, array) => {
           const isLast = index === (array.length - 1);
