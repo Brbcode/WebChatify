@@ -14,7 +14,6 @@ function App() {
   const [user, setUser] = useState(User.get());
 
   const onSignIn = (data) => {
-    console.log(data);
     setUser(User.save(data));
   };
 
