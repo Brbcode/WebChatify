@@ -9,6 +9,7 @@ import { Edit, Visibility } from '@mui/icons-material';
 import TimeParser from '../../utils/TimeParser';
 import User from '../../utils/User';
 import MessageHistory from './MessageHistory';
+import AvatarUtil from '../../utils/AvatarUtil';
 
 const StyledContent = styled(Box)(({ theme }) => {
   const addStyle = theme.palette.mode === 'dark' ? ({})
@@ -51,26 +52,6 @@ function Message({
   const [menuOpen, setMenuOpen] = useState(false);
   const [showHistory, setHistoryVisibility] = useState(false);
 
-  const stringToColor = (string) => {
-    let hash = 0;
-    let i;
-
-    for (i = 0; i < string.length; i += 1) {
-      // eslint-disable-next-line no-bitwise
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = '#';
-
-    for (i = 0; i < 3; i += 1) {
-      // eslint-disable-next-line no-bitwise
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
-    }
-
-    return color;
-  };
-
   const parseDate = (data) => {
     const date = TimeParser.getDateFromMessageData(data);
 
@@ -85,19 +66,6 @@ function Message({
       mr: isFromOwner && '48px',
     },
   }));
-
-  const getAvatarProps = (displayName) => {
-    const upperDisplayName = displayName.replace(/\s+/g, ' ').toUpperCase();
-    const words = upperDisplayName.split(' ');
-    const initials = words.map((word) => word[0].toUpperCase()).join('');
-
-    return {
-      sx: {
-        bgcolor: stringToColor(displayName),
-      },
-      children: initials,
-    };
-  };
 
   const handleContextMenu = (event) => {
     event.preventDefault();
@@ -125,7 +93,7 @@ function Message({
     >
       {
         showAvatar && isFromOwner === false
-          && <Avatar {...getAvatarProps(data.sender.displayName)} />
+          && <Avatar {...AvatarUtil.getAvatarProps(data.sender.displayName)} />
       }
       <StyledContent
         {...getContentStyles()}
@@ -134,7 +102,7 @@ function Message({
       >
         {
           showAvatar && (
-          <DisplayName sx={{ color: stringToColor(data.sender.displayName) }}>
+          <DisplayName sx={{ color: AvatarUtil.stringToColor(data.sender.displayName) }}>
             {data.sender.displayName}
           </DisplayName>
           )
@@ -159,7 +127,7 @@ function Message({
         />
       </StyledContent>
       {
-          showAvatar && isFromOwner && <Avatar {...getAvatarProps(data.sender.displayName)} />
+          showAvatar && isFromOwner && <Avatar {...AvatarUtil.getAvatarProps(data.sender.displayName)} />
       }
       <Menu
         open={menuOpen}
