@@ -71,6 +71,19 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
+    .addLoader({
+        test: /\.wav$/,
+        use: [
+            {
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[hash:8].[ext]',
+                    outputPath: 'sounds/', // Set the output path as per your project structure
+                    publicPath: 'sounds/' // Set the public path as per your project structure
+                }
+            }
+        ]
+    })
 ;
 
 module.exports = Encore.getWebpackConfig();

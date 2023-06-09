@@ -26,6 +26,7 @@ import TimeParser from '../../utils/TimeParser';
 import Mercure from '../../utils/Mercure';
 import User from '../../utils/User';
 import InviteModal from './InviteModal';
+import sound from './sound.wav';
 
 const MultilineInputBase = styled(InputBase)(({ theme }) => ({
   '& textarea': {
@@ -210,7 +211,12 @@ function Chatroom() {
     })));
 
     const sliceLast = data.slice(-1);
-    const lastMsg = sliceLast.lenght === 0 ? null : sliceLast[0];
+    const lastMsg = sliceLast.length === 0 ? null : sliceLast[0];
+
+    setTimeout(() => {
+      const audio = new Audio(`/build/${sound}`);
+      audio.play();
+    }, 200);
 
     if (lastMsg && lastMsg.sender.id === User.get().id) {
       setTimeout(scrollToEnd, 200);
