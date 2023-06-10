@@ -38,6 +38,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: ChatRoom::class)]
     private Collection $chatRooms;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatar = null;
+
     /**
      * @param string $email
      * @param string $password
@@ -191,6 +194,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $chatRoom->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        //TODO: refactor
+        return sprintf('http://localhost:8000/build/images/%s', $this->avatar);
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }

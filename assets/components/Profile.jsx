@@ -15,6 +15,8 @@ import {
 import PropTypes from 'prop-types';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AvatarUtil from '../utils/AvatarUtil';
+import Api from '../api';
+import User from '../utils/User';
 
 function Profile({
   open, onClose, user, editable,
@@ -41,6 +43,27 @@ function Profile({
     };
 
     reader.readAsDataURL(selectedFile);
+  };
+
+  const handleSave = () => {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    Api
+      .post(
+        '/user/avatar',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+      .then(({ data }) => {
+        User.save({ ...data, token: User.getToken() });
+        onClose();
+      })
+      .catch(() => { /** Do nothing * */ });
   };
 
   return (
@@ -76,7 +99,7 @@ function Profile({
                   {
                     previewImage
                       ? <Avatar alt="preview" src={previewImage} />
-                      : <Avatar {...AvatarUtil.getAvatarProps(displayName)} />
+                      : <Avatar {...AvatarUtil.getAvatarProps(user)} />
                   }
                   <TextField
                     value={displayName}
@@ -126,7 +149,7 @@ function Profile({
         }
       </DialogContent>
       <DialogActions>
-        <Button disabled={!editable}>Save</Button>
+        <Button disabled={!editable} onClick={handleSave}>Save</Button>
       </DialogActions>
     </Dialog>
   );
@@ -140,6 +163,7 @@ Profile.propTypes = {
     displayName: PropTypes.string,
     roles: PropTypes.arrayOf(PropTypes.string),
   }),
+  editable: PropTypes.bool,
 };
 
 Profile.defaultProps = {

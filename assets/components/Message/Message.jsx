@@ -93,7 +93,7 @@ function Message({
     >
       {
         showAvatar && isFromOwner === false
-          && <Avatar {...AvatarUtil.getAvatarProps(data.sender.displayName)} />
+          && <Avatar {...AvatarUtil.getAvatarProps(data.sender)} />
       }
       <StyledContent
         {...getContentStyles()}
@@ -127,7 +127,7 @@ function Message({
         />
       </StyledContent>
       {
-          showAvatar && isFromOwner && <Avatar {...AvatarUtil.getAvatarProps(data.sender.displayName)} />
+          showAvatar && isFromOwner && <Avatar {...AvatarUtil.getAvatarProps(data.sender)} />
       }
       <Menu
         open={menuOpen}
@@ -158,7 +158,7 @@ function Message({
         }
       </Menu>
       {
-        isFromOwner
+        User.get().roles.includes('ROLE_ADMIN')
           && (
           <MessageHistory
             id={data.id}

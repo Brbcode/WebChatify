@@ -37,7 +37,7 @@ function AppMenu({ anchorEl, onClose }) {
         }}
         >
           <ListItemIcon>
-            <Avatar {...AvatarUtil.getAvatarProps(User.get().displayName, {
+            <Avatar {...AvatarUtil.getAvatarProps(User.get(), {
               width: 24,
               height: 24,
               fontSize: '10pt',

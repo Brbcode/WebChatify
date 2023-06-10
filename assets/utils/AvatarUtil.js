@@ -18,17 +18,29 @@ const AvatarUtil = {
 
     return color;
   },
-  getAvatarProps: (displayName, style = {}) => {
+  getAvatarProps: ({ displayName, avatar }, style = {}) => {
     const upperDisplayName = displayName.replace(/\s+/g, ' ').toUpperCase();
     const words = upperDisplayName.split(' ');
     const initials = words.map((word) => word[0].toUpperCase()).join('');
     const color = AvatarUtil.stringToColor(displayName);
 
-    return {
+    const sx = {
       sx: {
         bgcolor: color,
         ...style,
       },
+    };
+
+    if (avatar) {
+      return {
+        ...sx,
+        alt: displayName,
+        src: avatar,
+      };
+    }
+
+    return {
+      ...sx,
       children: initials,
     };
   },

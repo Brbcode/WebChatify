@@ -1,9 +1,9 @@
 const User = (() => {
   let instance = null;
 
-  function create(id, email, displayName, roles, token) {
+  function create(id, email, displayName, roles, token, avatar) {
     const user = {
-      id, email, displayName, roles, token,
+      id, email, displayName, roles, token, avatar,
     };
 
     return Object.freeze(user);
@@ -11,14 +11,14 @@ const User = (() => {
 
   return {
     save: ({
-      id, email, displayName, roles, token,
+      id, email, displayName, roles, token, avatar,
     }) => {
       sessionStorage.setItem('user', JSON.stringify({
-        id, email, displayName, roles,
+        id, email, displayName, roles, avatar,
       }));
       sessionStorage.setItem('token', token);
 
-      instance = create(id, email, displayName, roles, token);
+      instance = create(id, email, displayName, roles, token, avatar);
 
       return instance;
     },
@@ -29,10 +29,10 @@ const User = (() => {
           return null;
         }
         const {
-          id, email, displayName, roles,
+          id, email, displayName, roles, avatar,
         } = JSON.parse(userItem);
         const token = sessionStorage.getItem('token');
-        instance = create(id, email, displayName, roles, token);
+        instance = create(id, email, displayName, roles, token, avatar);
       }
 
       return instance;

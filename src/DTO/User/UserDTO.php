@@ -13,6 +13,7 @@ class UserDTO
         $response['email'] = $user->getEmail();
         $response['displayName'] = $user->getDisplayName();
         $response['roles'] = $user->getRoles();
+        $response['avatar'] = $user->getAvatar();
 
         return $response;
     }

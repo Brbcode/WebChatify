@@ -11,6 +11,7 @@ class UserMinDTO
         $response = [];
         $response['id'] = $user->getId()->jsonSerialize();
         $response['displayName'] = $user->getDisplayName();
+        $response['avatar'] = $user->getAvatar();
 
         return $response;
     }
