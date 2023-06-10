@@ -66,7 +66,7 @@ function Chatroom() {
 
   const handleScroll = () => {
     const { current } = scrollBoxRef;
-    const newValue = (current.scrollHeight - current.scrollTop) === current.clientHeight;
+    const newValue = (current.scrollHeight - current.scrollTop) >= current.clientHeight;
     setScrolledToBottom(newValue);
   };
 
@@ -204,6 +204,11 @@ function Chatroom() {
 
   const handleSubscriber = (event) => {
     const data = JSON.parse(event.data);
+
+    // TODO: refactor
+    const { current } = scrollBoxRef;
+    const isFullScrolled = (current.scrollHeight - current.scrollTop) >= current.clientHeight;
+
     setMessages(data.map((m) => ({
       ...m,
       createdAt: m.createdAt.date,
@@ -216,6 +221,10 @@ function Chatroom() {
     setTimeout(() => {
       const audio = new Audio(`/build/${sound}`);
       audio.play();
+
+      if (isFullScrolled) {
+        scrollToEnd();
+      }
     }, 200);
 
     if (lastMsg && lastMsg.sender.id === User.get().id) {
