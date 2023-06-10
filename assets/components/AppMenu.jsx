@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
-import { ListItemIcon, Menu, MenuItem } from '@mui/material';
+import {
+  Avatar, ListItemIcon, Menu, MenuItem,
+} from '@mui/material';
 import {
   ChatOutlined,
-  DarkModeOutlined, HelpOutline, LogoutOutlined, SettingsOutlined,
+  DarkModeOutlined, HelpOutline, LogoutOutlined,
 } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import ThemeSwitch from './ThemeSwitch';
 import User from '../utils/User';
 import About from './About';
 import CreateChatroom from './Chatroom/CreateChatroom';
+import Profile from './Profile';
+import AvatarUtil from '../utils/AvatarUtil';
 
 function AppMenu({ anchorEl, onClose }) {
   const [isAboutModalOpen, setAboutModalOpen] = useState(false);
   const [isCreateChatModalOpen, setCreateChatModalOpen] = useState(false);
+  const [isProfileModalOpen, setProfileModalOpen] = useState(false);
 
   return (
     <>
@@ -26,6 +31,21 @@ function AppMenu({ anchorEl, onClose }) {
           },
         }}
       >
+        <MenuItem onClick={() => {
+          onClose();
+          setProfileModalOpen(true);
+        }}
+        >
+          <ListItemIcon>
+            <Avatar {...AvatarUtil.getAvatarProps(User.get().displayName, {
+              width: 24,
+              height: 24,
+              fontSize: '10pt',
+            })}
+            />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
         <MenuItem onClick={() => {
           onClose();
           setCreateChatModalOpen(true);
@@ -58,6 +78,17 @@ function AppMenu({ anchorEl, onClose }) {
             onClose={() => setCreateChatModalOpen(false)}
           />
           )}
+      {
+        isProfileModalOpen
+          && (
+          <Profile
+            onClose={() => setProfileModalOpen(false)}
+            open={isProfileModalOpen}
+            user={User.get()}
+            editable
+          />
+          )
+      }
     </>
   );
 }
