@@ -42,8 +42,9 @@ init:
 	@echo
 #	@echo "###> Hooks Install ###"
 #	$(DOCKER_CMD) exec app "cp .docker/hooks/pre-commit .git/hooks/pre-commit"
-	@echo "###< Hooks Install ###"
-	@echo
+#	@echo "###< Hooks Install ###"
+#	@echo
+	$(DOCKER_CMD) exec app "mkdir /var/www/html/public/build/images"
 	@echo "###> Generate the SSL keys ###"
 	$(DOCKER_CMD) exec app "php bin/console lexik:jwt:generate-keypair --skip-if-exists"
 	@echo "###< Generate the SSL keys ###"
