@@ -3,3 +3,15 @@ App\Entity\Participant:
     __construct:
       user: '@participant_user_0'
       chatroom: '@test_fill_chat'
+
+  tfg_participant_{2..3}:
+    __construct:
+      user: '@tfg_user_<current()>'
+      chatroom: '@tfg_chat'
+      joinedAt: <identity(new \DateTimeImmutable('2023-06-10'))>
+
+  tfg_admin_chat_participant_{1..5}:
+    __construct:
+      user: '@tfg_user_<current()>'
+      chatroom: '@tfg_admin_chat'
+      joinedAt: <identity(new \DateTimeImmutable('2023-06-10'))>

@@ -14,3 +14,53 @@ App\Entity\Message:
       createdAt: <identity(new \DateTimeImmutable('2023-05-13'))>
       editAt:    <identity(new \DateTime('2023-05-14'))>
       id: '74b0c719-0b8a-4784-a3ab-0f2bbfedf8ed'
+
+  tfg_msg_1:
+    __construct:
+      sender: '@tfg_user_1'
+      chatroom: '@tfg_chat'
+      content: 'Hello'
+      createdAt: <identity(new \DateTimeImmutable('2023-06-13 12:30:00'))>
+
+  tfg_msg_2:
+    __construct:
+      sender: '@tfg_user_1'
+      chatroom: '@tfg_chat'
+      content: 'world!!'
+      createdAt: <identity(new \DateTimeImmutable('2023-06-13 12:31:00'))>
+
+  tfg_msg_3:
+    __construct:
+      sender: '@tfg_user_2'
+      chatroom: '@tfg_chat'
+      content: 'Lore Ipsum'
+      createdAt: <identity(new \DateTimeImmutable('2023-06-13 12:32:00'))>
+
+  tfg_msg_4:
+    __construct:
+      sender: '@tfg_user_3'
+      chatroom: '@tfg_chat'
+      content: 'Duis leo dolor, fringilla vitae.'
+      createdAt: <identity(new \DateTimeImmutable('2023-06-13 12:33:00'))>
+
+  tfg_msg_5:
+    __construct:
+      sender: '@tfg_user_3'
+      chatroom: '@tfg_chat'
+      content: 'Cras egestas augue.'
+      createdAt: <identity(new \DateTimeImmutable('2023-06-13 12:33:30'))>
+
+  tfg_chat_msg_1:
+    __construct:
+      sender: '@tfg_user_1'
+      chatroom: '@tfg_admin_chat'
+      content: 'Hello World!!'
+      createdAt: <identity(new \DateTimeImmutable('2023-06-13 12:30:00'))>
+      editAt: <identity(new \DateTime('2023-06-13 12:35:00'))>
+
+  tfg_chat_msg_2:
+    __construct:
+      sender: '@tfg_admin'
+      chatroom: '@tfg_admin_chat'
+      content: 'Hi'
+      createdAt: <identity(new \DateTimeImmutable('2023-06-13 12:31:00'))>

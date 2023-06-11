@@ -34,3 +34,17 @@ App\Entity\User:
       id: '01H0AQ397CFMBVRXDABC1FEHRW'
       roles:
         - 'ROLE_ADMIN'
+
+  tfg_user_{1..5}:
+    __construct:
+      email: 'user<current()>\@tfg.hlanz.es'
+      displayName: '<firstname()> <lastname()>'
+      password: 'password'
+
+  tfg_admin:
+    __construct:
+      email: 'admin@tfg.hlanz.es'
+      displayName: 'Brbcode (Admin)'
+      password: 'password'
+      roles:
+        - 'ROLE_ADMIN'

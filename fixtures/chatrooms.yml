@@ -15,3 +15,13 @@ App\Entity\ChatRoom:
         owner: '@chat_owner_user'
         title: 'Test Join Chat'
         id: '35afea23-ec2a-4d26-977b-9240b6bdfdb9'
+
+  tfg_chat:
+    __construct:
+      owner: '@tfg_user_1'
+      title: 'Example TFG Chat'
+
+  tfg_admin_chat:
+    __construct:
+      owner: '@tfg_admin'
+      title: 'Example TFG Admin Chat'
