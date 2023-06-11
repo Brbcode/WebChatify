@@ -7,7 +7,7 @@ Feature:
     Given I am logged with "testAdmin@domain.com" and "password"
     When user send a GET request to "/api/users"
     Then the response status code should be 200
-    And the JSON node "root" should have 6 elements
+    And the JSON node "root" should have 12 elements
     And the JSON node "root[0].id" should be equal to "01H0AQ397CFMBVRXDABC1FEHRW"
     And the JSON node "root[0].email" should be equal to "testAdmin@domain.com"
     And the JSON node "root[0].displayName" should be equal to "Admin User"

@@ -6,3 +6,43 @@ App\Entity\MessageEditRecord:
       originalContent: 'Hello World!'
       editedContent: 'Edited Message!'
       editAt: <identity(new \DateTimeImmutable('2023-05-14'))>
+
+  tfg_edit_record_1:
+    __construct:
+      editor: '@tfg_user_1'
+      message: '@tfg_chat_msg_1'
+      originalContent: 'H'
+      editedContent: 'Hel'
+      editAt: <identity(new \DateTimeImmutable('2023-06-11 12:31:00'))>
+
+  tfg_edit_record_2:
+    __construct:
+      editor: '@tfg_user_1'
+      message: '@tfg_chat_msg_1'
+      originalContent: 'Hel'
+      editedContent: 'Hello W'
+      editAt: <identity(new \DateTimeImmutable('2023-06-11 12:32:00'))>
+
+  tfg_edit_record_3:
+    __construct:
+      editor: '@tfg_user_1'
+      message: '@tfg_chat_msg_1'
+      originalContent: 'Hello W'
+      editedContent: 'Hello Worl'
+      editAt: <identity(new \DateTimeImmutable('2023-06-11 12:33:00'))>
+
+  tfg_edit_record_4:
+    __construct:
+      editor: '@tfg_user_1'
+      message: '@tfg_chat_msg_1'
+      originalContent: 'Hello Worl'
+      editedContent: 'Hello World!'
+      editAt: <identity(new \DateTimeImmutable('2023-06-11 12:34:00'))>
+
+  tfg_edit_record_5:
+    __construct:
+      editor: '@tfg_user_1'
+      message: '@tfg_chat_msg_1'
+      originalContent: 'Hello World!'
+      editedContent: 'Hello World!!'
+      editAt: <identity(new \DateTimeImmutable('2023-06-11 12:35:00'))>
